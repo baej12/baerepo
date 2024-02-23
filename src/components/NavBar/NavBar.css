@@ -1,0 +1,59 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+.NavBar-Parent {
+  margin-top: 2rem;
+  border-radius: 1rem;
+  background-color: white;
+  border:0.3rem solid blue;
+  border-color:grey;
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  height: 4rem;
+  width: 70vw;
+  min-width:50rem;
+}
+
+.NavBar-Logo {
+  max-width: 4rem;
+  max-height: 2rem;
+  margin-top:0.3rem;
+}
+
+.NavBar-Items {
+  font-family: 'Roboto', monospace;
+  font-size: 2rem;
+  color: black;
+ 	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-evenly;
+	align-items: center;
+	align-content: center;
+  width: 100%;
+  margin-left:1rem;
+  border-radius:-2rem;
+  border-color:grey;
+}
+
+.NavBar-Items-Item:hover {
+  text-decoration: underline;
+}
+
+.NavBar-Items-Item {
+  /* margin-left: 5%;
+  margin-right: 5%; */
+  margin-left: 1rem;
+  margin-right: 2rem;
+}
+
+.NavBar-Items-Item:hover {
+  cursor: pointer;
+}
+
+.unselectable {
+    user-select: none;
+}

@@ -1,0 +1,55 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+.aboutpage {
+    background-color: white;
+    border: 0.1rem solid grey;
+    transition: 0.2s;
+    width: 70vw;
+    margin-top: 10vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2rem;
+    box-shadow: 1rem 1rem 1rem rgba(169, 169, 169, 0.5);
+    margin-bottom: 4rem;
+      font-family: 'Roboto', monospace;
+}
+
+.innerborder {
+    border: 3px solid grey;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin: 2rem;
+}
+
+.certrow {
+    display: flex;
+    flex-direction: row;
+    justify-content: baseline;
+    align-items: center;
+    align-content: center;
+    margin: 2rem;
+
+}
+
+.alert {
+    border: 0.2rem dashed red;
+    border-radius: 1rem;
+    background-color: rgba(142, 91, 91, 0.1);
+    padding: 2rem;
+}
+
+.unselectable {
+    user-select: none;
+}
+
+.textblock {
+    margin: 2rem;
+    padding: 2rem;
+    border: 0.1rem solid grey;
+    border-radius: 1rem;
+    background-color: rgba(169, 169, 169, 0.1);
+    box-shadow: 0.5rem 0.5rem 0.5rem rgba(169, 169, 169, 0.5);
+    text-align: justify;
+}

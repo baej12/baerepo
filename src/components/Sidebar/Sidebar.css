@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+.sidebar {
+  font-family: 'VT323', monospace;
+  font-size: 2rem;
+  width: 250px;
+  height: 100%;
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: width 0.3s ease-in-out;
+  position: relative;
+  z-index: 5;
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.toggle-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  cursor: pointer;
+  background-color: #444;
+  color: #fff;
+}
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-top:2rem;
+}
+
+.nav-links li {
+  padding: 15px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.nav-links li:hover {
+  background-color: #444;
+}
+
+.sidebar-icon {
+    background-color: #ffffff;
+    margin-top:1.5rem;
+    width: 50px !important;
+    height:50px !important;
+    border-radius: 20%;
+}
+
+.sidebar-icon:hover {
+  cursor: pointer;
+  background-color: orange;
+  transition: 0.1s;
+}
