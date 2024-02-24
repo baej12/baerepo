@@ -1,0 +1,11 @@
+.attribute {
+  position:fixed;
+  bottom: 0;
+  right: 0;
+  color: rgb(194, 194, 194);
+  font-size: 1rem;
+}
+
+.neonlink {
+  color:aqua;
+}

@@ -9,7 +9,7 @@ export const Mainpage = () => {
     }, [])
 
     return <div className="mainpage" id="mainpage">
-        <div style={{border:"3px solid grey", borderRadius:"1rem", margin:"2rem", padding:"2rem", minWidth:'35rem'}}>
+        <div style={{border:"2px solid grey", borderRadius:"1rem", margin:"2rem", padding:"2rem", minWidth:'35rem'}}>
             <h1 className="unselectable" style={{color:"orange"}}>
                 Welcome to Brandon's Repository!
             </h1>
