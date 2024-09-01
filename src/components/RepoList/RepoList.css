@@ -1,0 +1,9 @@
+.project-item {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: baseline;
+	align-content: stretch;
+    padding-left:20%;
+}

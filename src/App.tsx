@@ -6,9 +6,9 @@ import { NavBar } from "./components/NavBar/NavBar";
 function App() {
   return (
     <div className = "App">
-      <NavBar items={["Home", "About", "Services", "Contact"]} />
+      {/* <NavBar items={["Home", "About", "Services", "Contact"]} /> */}
       <Mainpage />
-      <Attributions />
+      {/* <Attributions /> */}
     </div>
   );
 }
