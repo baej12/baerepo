@@ -6,4 +6,66 @@
 	align-items: baseline;
 	align-content: stretch;
     padding-left:20%;
+    margin-bottom:10rem;
+    text-align:justify;
+}
+
+.item {
+    font-size: 1rem;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: baseline;
+	align-content: stretch;
+    cursor: default;
+    user-select: none;
+    width:auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    min-width: 100%;
+}
+
+.item:hover {
+    outline:2px solid white;
+    padding:1rem;
+    border-radius:20px;
+    background-color: rgb(47, 54, 107);
+    transition:200ms;
+    transform:scale(1.1);
+}
+
+.item-name {
+    font-size: 2rem;
+    text-decoration: none;
+}
+
+.item-name:visited {
+    color:rgb(226, 226, 226);
+}
+
+.item-desc {
+    padding-top: 1.5rem;
+}
+
+.item-skill {
+    /* padding-top: 1.5rem;
+     */
+    border: 2px solid rgb(15, 61, 93);
+    border-radius: 20px;
+    background-color: rgb(65, 112, 145);
+    font-size: 1rem;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: center;
+	align-content: stretch;
+    width: 100%;
+    margin-top: 2rem;
+    cursor: default;
+    user-select: none;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width:fit-content;
 }

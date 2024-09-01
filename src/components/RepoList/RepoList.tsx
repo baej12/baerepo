@@ -13,6 +13,7 @@ export const RepoList = () => {
     }
 
     useEffect(() => {
+        //Gets the repos 
         axios.get<Item[]>('https://api.github.com/users/baej12/repos')
             .then(response => setRepo(response.data))
             .catch(error => console.error('Error fetching data:', error));
@@ -25,7 +26,15 @@ export const RepoList = () => {
         ) : (
             repo.map((item, index) => (
             <div key={index} className="item">
-                {item.name} {}
+                <a className="item-name" href={item.html_url}>
+                    {item.name}
+                </a>
+                <span className="item-desc">
+                    {item.description != null ? item.description : "Oops! I didn't write a description for this repository"}
+                </span>
+                <span className="item-skill">
+                    {item.language}
+                </span>
             </div>
             ))
         )}

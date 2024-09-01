@@ -1,5 +1,7 @@
 import './Mainpage.css';
 import { RepoList } from '../RepoList/RepoList';
+import liicon from '../../assets/linkedinwhite.png';
+import githubicon from '../../assets/githubwhite.png';
 
 export const Mainpage = () => {
     return <div className = "mainpage">
@@ -18,8 +20,17 @@ export const Mainpage = () => {
             <ul className = "nav-items">
                 <li><a className="page-navigator" href="#about">About</a></li>
                 <li><a className="page-navigator" href="#experience">Experience</a></li>
-                <li><a className="page-navigator" href="#projects">Projects</a></li>
+                <li><a className="page-navigator" href="#projects">Public Projects</a></li>
             </ul>
+
+            <span style ={{paddingTop: '37rem'}}>
+                <a href="https://www.linkedin.com/in/jhbbae/">
+                    <img src={liicon} width="42" height="42" style={{marginRight:'2rem'}} />
+                </a>
+                <a href="https://github.com/baej12">
+                    <img src={githubicon} width="42" height="42" style={{}}/>
+                </a>
+            </span>
         </div>
         <div className = "right-side">
             <section id = "about">
