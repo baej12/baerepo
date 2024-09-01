@@ -216,16 +216,14 @@ export const Mainpage = () => {
                             </span>
                         </div>
                     </div>
-                    <div className="job-item">
-                        <h1>
-                            <a href="">
-                                Click here to view full resume
-                            </a>
-                        </h1>
-                    </div>
+                    <h1>
+                        <a className="resume-link" href="https://github.com/baej12/baerepo/blob/8b15429559edcf31df13ffca1dc4706e4e0245aa/my-resume.pdf">
+                            Click here to view full resume
+                        </a>
+                    </h1>
                 </span>
             </section>
-            <section id = "projects" style={{paddingTop: '10rem'}}>
+            <section id = "projects">
                 <RepoList/>
             </section>
         </div>

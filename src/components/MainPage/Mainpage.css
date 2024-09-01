@@ -203,6 +203,10 @@ ul {
     color:rgb(226, 226, 226);
 }
 
+.resume-link:visited {
+    color:rgb(226, 226, 226);
+}
+
 .nav-items li:hover {
     transition:200ms;
     transform:scale(1.2);
