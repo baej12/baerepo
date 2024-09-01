@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import './RepoList.css'
 
@@ -10,16 +10,6 @@ export const RepoList = () => {
         html_url: string;
         language: string;
         description: string;
-    }
-
-    async function getGitRepoList() : Promise<void> {
-        try {
-            let response : AxiosResponse<any> = await axios.get("https://api.github.com/users/baej12/repos");
-            setRepo(response.data);
-            console.log(response.data);
-        } catch (error) {
-            console.log(error);
-        }
     }
 
     useEffect(() => {

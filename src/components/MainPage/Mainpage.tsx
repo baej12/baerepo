@@ -1,60 +1,7 @@
-import { ReactElement, useEffect, useState } from 'react';
 import './Mainpage.css';
-import Sidebar from '../Sidebar/Sidebar';
-import axios, { AxiosResponse } from 'axios';
 import { RepoList } from '../RepoList/RepoList';
 
 export const Mainpage = () => {
-    // const [date, setDate] = useState(new Date());
-
-    // useEffect(() => {
-    //     setDate(new Date());
-    // }, [])
-
-    // return <div className="mainpage" id="mainpage">
-    //     <div style={{border:"2px solid grey", borderRadius:"1rem", margin:"2rem", padding:"2rem", minWidth:'35rem'}}>
-    //         <h1 className="unselectable" style={{color:"orange"}}>
-    //             Welcome to Brandon's Repository!
-    //         </h1>   
-    //         <h2 className="unselectable alert">
-    //             This website is still undergoing maintenance as of 
-    //             {date.getMonth() + 1}/{date.getDate().toString()}/{date.getFullYear().toString()}. 
-    //             Many features have been disabled. <br />
-    //             Please check back later.
-    //         </h2>
-    //         <p className='textblock'>
-    //             This website will host a variety of projects and information about me. 
-    //             I used React and Typescript to construct this website.
-    //             Currently, the website is under construction and will be updated as time goes on.
-    //             Some pages or features will be disabled to prevent potential spam and abuse.
-    //         </p>  
-    //     </div>
-    // </div>
-
-    const [repo, setRepo] = useState([]);
-
-    async function getGitRepoList() : Promise<void> {
-        try {
-            // let response : AxiosResponse<any> = await axios.get("https://api.github.com/users/baej12/repos");
-            let response : any;
-            setRepo(response.data);
-            console.log(response.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const displayRepoList = () : ReactElement<any, any> => {
-
-        return <div>
-            {repo.map((r) => {return <div>{}</div>})}
-        </div>
-    }
-
-    useEffect(() => {
-        getGitRepoList();
-    }, []);
-
     return <div className = "mainpage">
         <div className = "left-side">
             <span className = "header-item" style={{fontSize : '3rem', fontWeight: '700'}}>

@@ -3,10 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { RouterProvider, createHashRouter } from 'react-router-dom';
-import { About } from './pages/About';
-import { Services } from './pages/Services';
-import { Contact } from './pages/Contact';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
