@@ -25,10 +25,14 @@ export const Mainpage = () => {
 
             <span style ={{paddingTop: '37rem'}}>
                 <a href="https://www.linkedin.com/in/jhbbae/">
-                    <img src={liicon} width="42" height="42" style={{marginRight:'2rem'}} />
+                    <img src={liicon} width="42" height="42" style={{marginRight:'2rem'}} 
+                        alt = "go to linkedin profile"
+                    />
                 </a>
                 <a href="https://github.com/baej12">
-                    <img src={githubicon} width="42" height="42" style={{}}/>
+                    <img src={githubicon} width="42" height="42" style={{}}
+                        alt = "go to github profile"
+                    />
                 </a>
             </span>
         </div>
