@@ -73,6 +73,11 @@ export const Mainpage = () => {
                         </h3>
                         <strong>Apr 2024 - Current</strong><br/><br/>
                         <span>I am currently waiting for their background investigation to clear me to start at the NSA.</span>
+                        <div className="job-skill-list">
+                            <span className="job-skill">
+                                TS/SCI Clearance
+                            </span>
+                        </div>
                     </div>
                     <div className="job-item">
                         <h1>
@@ -100,6 +105,9 @@ export const Mainpage = () => {
                             </span>
                             <span className="job-skill">
                                 Azure DevOps
+                            </span>
+                            <span className="job-skill">
+                                DoD Secret Clearance
                             </span>
                         </div>
                     </div>
