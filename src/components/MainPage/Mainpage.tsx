@@ -187,7 +187,7 @@ export const Mainpage = () => {
                         </div>
                     </div>
                     <h1>
-                        <a className="resume-link" href="https://github.com/baej12/baerepo/blob/8b15429559edcf31df13ffca1dc4706e4e0245aa/my-resume.pdf">
+                        <a className="resume-link" href="https://personalsitefiles.blob.core.windows.net/professionalfiles/my-resume.pdf">
                             Click here to view full resume
                         </a>
                     </h1>
