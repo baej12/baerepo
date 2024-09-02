@@ -145,7 +145,7 @@ ul {
     outline:2px solid white;
     padding:1rem;
     border-radius:20px;
-    background-color: rgb(47, 54, 107);
+    background-color: rgba(85, 98, 193, 0.1);
     transition:200ms;
     transform:scale(1.1);
 }
@@ -211,5 +211,14 @@ ul {
 
 .nav-items li:hover {
     transition:200ms;
+    transform:scale(1.2);
+}
+
+.soc-link {
+    transition:200ms;
+}
+
+.soc-link:hover {
+    transition: 200ms;
     transform:scale(1.2);
 }

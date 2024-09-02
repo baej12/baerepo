@@ -27,11 +27,13 @@ export const Mainpage = () => {
                 <a href="https://www.linkedin.com/in/jhbbae/">
                     <img src={liicon} width="42" height="42" style={{marginRight:'2rem'}} 
                         alt = "go to linkedin profile"
+                        className = "soc-link"
                     />
                 </a>
                 <a href="https://github.com/baej12">
                     <img src={githubicon} width="42" height="42" style={{}}
                         alt = "go to github profile"
+                        className = "soc-link"
                     />
                 </a>
             </span>

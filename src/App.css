@@ -9,6 +9,7 @@
   flex-direction: column;
   align-items: center;
   height:100%;
+  background-image: linear-gradient(to right, #0f172a, #06171b);
 }
 
 .App-header {
