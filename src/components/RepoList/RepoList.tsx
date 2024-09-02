@@ -25,17 +25,17 @@ export const RepoList = () => {
             <p>Loading...</p>
         ) : (
             repo.map((item, index) => (
-            <div key={index} className="item">
-                <a className="item-name" href={item.html_url}>
+            <a key={index} className="item" href={item.html_url}>
+                <span className="item-name">
                     {item.name}
-                </a>
+                </span>
                 <span className="item-desc">
                     {item.description != null ? item.description : "Oops! I didn't write a description for this repository"}
                 </span>
                 <span className="item-skill">
                     {item.language}
                 </span>
-            </div>
+            </a>
             ))
         )}
     </div>

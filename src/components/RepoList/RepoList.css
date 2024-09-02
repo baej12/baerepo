@@ -24,15 +24,27 @@
     padding-top: 1rem;
     padding-bottom: 1rem;
     min-width: 100%;
+    outline:2px solid rgba(255, 255, 255, 0);
+    text-decoration: none;
+    color: rgb(226, 226, 226);
+    transition: 200ms;
+}
+
+.item:visited {
+    font-size: 2rem;
+    text-decoration: none;
+    color: rgb(226, 226, 226);
+    transition: 200ms;  
 }
 
 .item:hover {
-    outline:2px solid white;
+    outline:2px solid rgba(255, 255, 255, 0.1);
     padding:1rem;
     border-radius:20px;
     background-color: rgba(85, 98, 193, 0.1);
     transition:200ms;
     transform:scale(1.1);
+    cursor: pointer;
 }
 
 .item-name {
