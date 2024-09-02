@@ -101,16 +101,21 @@ ul {
 
 .job-item {
     margin-bottom:3rem;
-    transition:200ms;
+    transition: 200ms ease;
+    width: 100%;
     outline:2px solid rgba(255, 255, 255, 0);
+    transform-origin: center;
+    overflow: hidden;
+    padding-top: 1rem;
+    padding-bottom:1rem;
 }
 
 .job-item:hover {
     outline:2px solid rgba(255, 255, 255, 0.1);
     cursor: default;
-    padding:1rem;
     border-radius:20px;
     background-color: rgba(85, 98, 193, 0.1);
+    padding:1rem;
     transition:200ms;
     transform:scale(1.1);
 }
