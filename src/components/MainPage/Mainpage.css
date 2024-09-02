@@ -1,48 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap");/*
-@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap");
 
-.mainpage {
-    font-family: 'Roboto', monospace;
-    background-color: white;
-    border: 0.1rem solid grey;
-    transition: 0.2s;
-    width: 70vw;
-    margin-top: 10vh;
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 2rem;
-    box-shadow: 1rem 1rem 1rem rgba(169, 169, 169, 0.5);
-    min-width: 40rem;
-}
-
-.alert {
-    border: 0.2rem dashed red;
-    border-radius: 1rem;
-    background-color: rgba(142, 91, 91, 0.1);
-    padding: 2rem;
-}
-
-.unselectable {
-    user-select: none;
-}
-
-.textblock {
-    margin: 2rem;
-    padding: 2rem;
-    border: 0.1rem solid grey;
-    border-radius: 1rem;
-    background-color: rgba(169, 169, 169, 0.1);
-    box-shadow: 0.5rem 0.5rem 0.5rem rgba(169, 169, 169, 0.5);
-    text-align: justify;
-} */
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 70px;
 }
 
 .mainpage {
-    /* color: rgb(240, 234, 214); */
     color: white;
     font-family: var(--font-inter),ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
     font-feature-settings: "ss03","cv02","cv11";

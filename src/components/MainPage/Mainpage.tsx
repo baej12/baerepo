@@ -68,13 +68,13 @@ export const Mainpage = () => {
                 <span className="right-side-item text-item" style={{marginBottom:'10rem'}}>
                     <div className="job-item">
                         <h1>
-                            National Security Agency
+                            Clearance Investigation
                         </h1>
                         <h3>
                             Software Engineer
                         </h3>
                         <strong>Apr 2024 - Current</strong><br/><br/>
-                        <span>I am currently waiting for their background investigation to clear me to start at the NSA.</span>
+                        <span>I am currently waiting for my TS/SCI clearance investigation to conclude.</span>
                         <div className="job-skill-list">
                             <span className="job-skill">
                                 TS/SCI Clearance
