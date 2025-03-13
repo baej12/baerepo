@@ -68,13 +68,50 @@ export const Mainpage = () => {
                 <span className="right-side-item text-item" style={{marginBottom:'10rem'}}>
                     <div className="job-item">
                         <h1>
-                            Clearance Investigation
+                            Insight Global (Contracted to Huntington Ingalls Industries)
                         </h1>
                         <h3>
-                            Software Engineer
+                            Secret Mid Software Engineer 
                         </h3>
-                        <strong>Apr 2024 - Current</strong><br/><br/>
-                        <span>I am currently waiting for my TS/SCI clearance investigation to conclude.</span>
+                        <strong>Sep 2024 - Current</strong><br/><br/>
+                        <span>
+                        - Developed cutting-edge React based web application to satisfy customer requirements. <br/>
+                        - Assisted in deployment and testing of project from development to production environment. <br/>
+                        - Optimized JTT map to allow for significantly increased entity count without sacrificing quality. <br/>
+                        </span>
+                        <div className="job-skill-list">
+                            <span className="job-skill">
+                                Javascript
+                            </span>
+                            <span className="job-skill">
+                                React
+                            </span>
+                            <span className="job-skill">
+                                Docker
+                            </span>
+                            <span className="job-skill">
+                                Cesium
+                            </span>
+                            <span className="job-skill">
+                                CI/CD
+                            </span>
+                            <span className="job-skill">
+                                DoD Secret Clearance
+                            </span>
+                        </div>
+                    </div>
+                    <div className="job-item">
+                        <h1>
+                            National Security Agency
+                        </h1>
+                        <h3>
+                            Conditional Job Offer as Software Engineer
+                        </h3>
+                        <strong>Apr 2024 - Sep 2024</strong><br/><br/>
+                        <span>
+                            During this time period, I received a conditional job offer from the National Security Agency. However,
+                            due to the lengthy investigation process, I elected to pursue employment elsewhere with my Secret Clearance.
+                        </span>
                         <div className="job-skill-list">
                             <span className="job-skill">
                                 TS/SCI Clearance
