@@ -50,6 +50,7 @@
 .item-name {
     font-size: 2rem;
     text-decoration: none;
+    text-align: left;
 }
 
 .item-name:visited {

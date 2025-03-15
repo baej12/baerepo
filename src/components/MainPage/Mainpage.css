@@ -25,12 +25,14 @@ html {
     display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
-	justify-content: center;
+	/* justify-content: center; */
 	align-items: flex-start;
 	align-content: stretch;
     height: 100%;
-    position:sticky;
-    top: 5rem;
+    position: sticky;
+    top: 4rem;
+    /* position:fixed; */
+    /* top: 5rem; */
 }
 
 .right-side {
@@ -44,6 +46,7 @@ html {
 	align-content: stretch;
     height: 100%;
     line-height:2rem;
+    margin-right: 0.5rem;
     color: rgb(226, 226, 226);
 }
 

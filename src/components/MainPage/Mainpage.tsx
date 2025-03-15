@@ -2,6 +2,7 @@ import './Mainpage.css';
 import { RepoList } from '../RepoList/RepoList';
 import liicon from '../../assets/linkedinwhite.png';
 import githubicon from '../../assets/githubwhite.png';
+import { useEffect } from 'react';
 
 export const Mainpage = () => {
     return <div className = "mainpage">
@@ -23,7 +24,7 @@ export const Mainpage = () => {
                 <li><a className="page-navigator" href="#projects">Public Projects</a></li>
             </ul>
 
-            <span style ={{paddingTop: '37rem'}}>
+            {/* <span style ={{position: "sticky", marginTop: "50vh"}}>
                 <a href="https://www.linkedin.com/in/jhbbae/">
                     <img src={liicon} width="42" height="42" style={{marginRight:'2rem'}} 
                         alt = "go to linkedin profile"
@@ -36,7 +37,7 @@ export const Mainpage = () => {
                         className = "soc-link"
                     />
                 </a>
-            </span>
+            </span> */}
         </div>
         <div className = "right-side">
             <section id = "about">
@@ -107,7 +108,7 @@ export const Mainpage = () => {
                         <h3>
                             Conditional Job Offer as Software Engineer
                         </h3>
-                        <strong>Apr 2024 - Sep 2024</strong><br/><br/>
+                        <strong>Feb 2024 - Sep 2024</strong><br/><br/>
                         <span>
                             During this time period, I received a conditional job offer from the National Security Agency. However,
                             due to the lengthy investigation process, I elected to pursue employment elsewhere with my Secret Clearance.
@@ -123,7 +124,7 @@ export const Mainpage = () => {
                             Raytheon
                         </h1>
                         <h3>
-                            Software Engineer
+                            Software Engineer P1
                         </h3>
                         <strong>Oct 2023 - Feb 2024</strong><br/><br/>
                         - Maintained and updated training material, documentation, and guides for commonly
@@ -155,7 +156,7 @@ export const Mainpage = () => {
                             UNLV, Dept. of Geoscience
                         </h1>
                         <h3>
-                            Student Web Developer
+                            Student Accessibility Web Developer
                         </h3>
                         <strong>Jan 2023 - Sep 2023</strong><br/><br/>
                         - Ensured equal access to information and functionality across FIA and DATIM
@@ -233,7 +234,23 @@ export const Mainpage = () => {
                 </span>
             </section>
             <section id = "projects">
-                <RepoList/>
+                <RepoList items={[
+                    {
+                        name: "Design and Analysis Toolkit for Inventory and Monitoring (DATIM)",
+                        description: "DATIM is a suite of software tools used for designing inventory and monitoring programs "
+                        + "and analyzing the results of those programs.",
+                        link: "https://apps.fs.usda.gov/DATIM/Default.aspx?",
+                        skills: ["C#", "JavaScript", "JQuery", "ASP.NET", "HTML", "CSS", "Git"]
+                    },
+                    {
+                        name: "Joint Training Tool",
+                        description: "A government-owned, cloud-based, web-enabled, single digital environment accessible worldwide. "
+                                        + "The tool supports collaborative planning and training for geographically separated commands "
+                                        + "focused at the strategic and operational levels of war.",
+                        link: "",
+                        skills: ["Javascript", "React", "Docker", "Cesium", "CI/CD", "HTML", "CSS", "Git"]
+                    }
+                ]}/>
             </section>
         </div>
     </div>
