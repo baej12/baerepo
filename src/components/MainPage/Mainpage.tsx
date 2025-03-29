@@ -1,8 +1,8 @@
 import './Mainpage.css';
 import { RepoList } from '../RepoList/RepoList';
-import liicon from '../../assets/linkedinwhite.png';
-import githubicon from '../../assets/githubwhite.png';
-import { useEffect } from 'react';
+// import liicon from '../../assets/linkedinwhite.png';
+// import githubicon from '../../assets/githubwhite.png';
+// import { useEffect } from 'react';
 
 export const Mainpage = () => {
     return <div className = "mainpage">
