@@ -56,10 +56,10 @@ export const Mainpage = () => {
                     from. Sadly, due to business reorganizations, my position was let go and I was laid off. Currently, I am
                     contracted to Huntington Ingalls Industries via Insight Global as a <b>Software Engineer.</b>
                 </span>
-                <span className="right-side-item text-item" style={{paddingTop: '2rem'}}>
+                {/* <span className="right-side-item text-item" style={{paddingTop: '2rem'}}>
                     When I'm not grinding LeetCode or attempting CTF events, you'll usually find me 
                     toiling away in Factorio or MineCraft. The factory must grow! The crops must be harvested!
-                </span>
+                </span> */}
             </section>
             <section id = "experience" style={{paddingTop: '10rem'}}>
                 <span className="right-side-item text-item" style={{marginBottom:'10rem'}}>
@@ -223,7 +223,10 @@ export const Mainpage = () => {
                         </div>
                     </div>
                     <h1>
-                        <a className="resume-link" href="https://personalsitefiles.blob.core.windows.net/professionalfiles/my-resume.pdf">
+                        {/* <a className="resume-link" href="https://personalsitefiles.blob.core.windows.net/professionalfiles/my-resume.pdf">
+                            Click here to view full resume
+                        </a> */}
+                        <a className="resume-link" href="https://personalsitefiles.blob.core.windows.net/professionalfiles/my-resume-2025.pdf">
                             Click here to view full resume
                         </a>
                     </h1>
