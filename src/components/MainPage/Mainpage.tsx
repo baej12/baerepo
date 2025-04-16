@@ -42,11 +42,7 @@ export const Mainpage = () => {
         <div className = "right-side">
             <section id = "about">
                 <span className="right-side-item text-item" style={{display:'inline'}}>
-                    Since I was a kid, I have been fascinated with computers and technology. I was always
-                    tinkering with the family computer and trying out new things I would see on forums.
-                    When I eventually saved up enough to build my own PC, I was able to delve further into
-                    the internet. Since then, I've discovered my <b>passion for programming</b> and have continued
-                    to pursue this career path. 
+                    Hey y'all! Thanks for checking out my website! Feel free to call me Brandon. 
                 </span>
                 <span className="right-side-item text-item" style={{paddingTop: '2rem', display:'inline'}}>
                     In 2019, I enrolled at the University of Nevada - Las Vegas. I pursued a <b>Bachelor of Science
@@ -57,8 +53,8 @@ export const Mainpage = () => {
                     was able to educate myself on creating webpages that were accessibility to those using assistive
                     technologies. After graduating UNLV, I accepted a position at Raytheon as a <b>Software Engineer.</b>&nbsp;
                     During my time there, I was able to work with an incredibly smart team that I was able to learn a lot
-                    from. Sadly, due to business reorganizations, my position was let go and I was laid off. I am 
-                    currently open to any opportunities that are presented. Feel free to contact me with any offers.
+                    from. Sadly, due to business reorganizations, my position was let go and I was laid off. Currently, I am
+                    contracted to Huntington Ingalls Industries via Insight Global as a <b>Software Engineer.</b>
                 </span>
                 <span className="right-side-item text-item" style={{paddingTop: '2rem'}}>
                     When I'm not grinding LeetCode or attempting CTF events, you'll usually find me 
