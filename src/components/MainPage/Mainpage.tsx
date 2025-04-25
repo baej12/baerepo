@@ -68,7 +68,7 @@ export const Mainpage = () => {
                             Insight Global (Contracted to Huntington Ingalls Industries)
                         </h1>
                         <h3>
-                            Secret Mid Software Engineer 
+                            Software Engineer Consultant
                         </h3>
                         <strong>Sep 2024 - Current</strong><br/><br/>
                         <span>
@@ -92,9 +92,6 @@ export const Mainpage = () => {
                             <span className="job-skill">
                                 CI/CD
                             </span>
-                            <span className="job-skill">
-                                DoD Secret Clearance
-                            </span>
                         </div>
                     </div>
                     <div className="job-item">
@@ -107,13 +104,8 @@ export const Mainpage = () => {
                         <strong>Feb 2024 - Sep 2024</strong><br/><br/>
                         <span>
                             During this time period, I received a conditional job offer from the National Security Agency. However,
-                            due to the lengthy investigation process, I elected to pursue employment elsewhere with my Secret Clearance.
+                            due to the lengthy investigation process, I elected to pursue employment elsewhere.
                         </span>
-                        <div className="job-skill-list">
-                            <span className="job-skill">
-                                TS/SCI Clearance
-                            </span>
-                        </div>
                     </div>
                     <div className="job-item">
                         <h1>
@@ -141,9 +133,6 @@ export const Mainpage = () => {
                             </span>
                             <span className="job-skill">
                                 Azure DevOps
-                            </span>
-                            <span className="job-skill">
-                                DoD Secret Clearance
                             </span>
                         </div>
                     </div>
