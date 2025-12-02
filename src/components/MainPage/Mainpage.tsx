@@ -1,28 +1,104 @@
 import './Mainpage.css';
 import { RepoList } from '../RepoList/RepoList';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 export const Mainpage = () => {
+    // compute header offset and expose as CSS variable so scroll-margin-top can handle alignment
     useEffect(() => {
-        const navLinks = document.querySelectorAll<HTMLAnchorElement>('.page-navigator');
-        const handler = (e: Event) => {
-            const anchor = e.currentTarget as HTMLAnchorElement;
-            const href = anchor.getAttribute('href') || '';
-            if (href.startsWith('#')) {
-                e.preventDefault();
-                const target = document.querySelector(href);
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    // update URL hash without triggering an extra jump
-                    window.history.replaceState(null, '', href);
-                }
-            }
+        const getHeaderEl = () => document.querySelector('.header-name') as HTMLElement | null;
+
+        const setHeaderOffset = () => {
+            const headerEl = getHeaderEl();
+            if (!headerEl) return;
+            const top = Math.round(headerEl.getBoundingClientRect().top);
+            document.documentElement.style.setProperty('--header-top-offset', `${top}px`);
         };
-        navLinks.forEach(link => link.addEventListener('click', handler));
+
+        // Initial set
+        setHeaderOffset();
+
+        // Update when fonts load (can change layout)
+        if (document.fonts && typeof document.fonts.ready?.then === 'function') {
+            document.fonts.ready.then(setHeaderOffset).catch(() => {});
+        }
+
+        // ResizeObserver to detect size/layout changes of the header or document
+        let ro: ResizeObserver | null = null;
+        try {
+            if (typeof ResizeObserver !== 'undefined') {
+                ro = new ResizeObserver(() => setHeaderOffset());
+                const headerEl = getHeaderEl();
+                if (headerEl) ro.observe(headerEl);
+                ro.observe(document.documentElement);
+            }
+        } catch (e) {
+            ro = null;
+        }
+
+        // Also listen to window resize and transitionend (for sidebar transitions)
+        window.addEventListener('resize', setHeaderOffset);
+        window.addEventListener('transitionend', setHeaderOffset);
+
         return () => {
-            navLinks.forEach(link => link.removeEventListener('click', handler));
+            window.removeEventListener('resize', setHeaderOffset);
+            window.removeEventListener('transitionend', setHeaderOffset);
+            if (ro) ro.disconnect();
         };
     }, []);
+
+    // On initial load (or when hash changes) ensure the hashed section is scrolled into view
+    useEffect(() => {
+        const scrollToHashSection = (hash?: string) => {
+            const h = (hash !== undefined ? hash : window.location.hash) || '';
+            if (!h) return;
+            const target = document.querySelector(h) as HTMLElement | null;
+            if (!target) return;
+            const sectionHeading = (target.querySelector('.section-heading') as HTMLElement | null)
+                || (target.querySelector('h2, h3, h1') as HTMLElement | null);
+            const referenceEl = sectionHeading || target;
+
+            // Wait a short moment so CSS variable and layout settle (fonts, resize observers)
+            window.setTimeout(() => {
+                // Use instant (auto) behavior on load so the browser doesn't animate from top-of-page to the hash position
+                referenceEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+
+                // Final precise correction: align reference top with header top if header exists
+                const header = document.querySelector('.header-name') as HTMLElement | null;
+                if (header) {
+                    const delta = referenceEl.getBoundingClientRect().top - header.getBoundingClientRect().top;
+                    if (Math.abs(delta) > 1) {
+                        window.scrollBy({ top: -delta, behavior: 'auto' });
+                    }
+                }
+            }, 60);
+        };
+
+        // Run on mount
+        scrollToHashSection();
+
+        // Also handle future hash changes (back/forward navigation)
+        const onHashChange = () => scrollToHashSection(window.location.hash);
+        window.addEventListener('hashchange', onHashChange);
+        return () => window.removeEventListener('hashchange', onHashChange);
+    }, []);
+
+    const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        const anchor = e.currentTarget as HTMLAnchorElement;
+        const href = anchor.getAttribute('href') || '';
+        if (!href.startsWith('#')) return;
+
+        const target = document.querySelector(href) as HTMLElement | null;
+        if (!target) return;
+
+        const sectionHeading = (target.querySelector('.section-heading') as HTMLElement | null)
+            || (target.querySelector('h2, h3, h1') as HTMLElement | null);
+        const referenceEl = sectionHeading || target;
+
+        // Use scrollIntoView with scroll-margin-top (set by CSS variable) to align top edge with header
+        (referenceEl as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.history.replaceState(null, '', href);
+    };
 
     return <div className="mainpage">
         <div className="left-side">
@@ -41,9 +117,9 @@ export const Mainpage = () => {
 
                 <nav className="nav-items" aria-label="Page navigation">
                     <ul>
-                        <li><a className="page-navigator" href="#about">About</a></li>
-                        <li><a className="page-navigator" href="#experience">Experience</a></li>
-                        <li><a className="page-navigator" href="#projects">Public Projects</a></li>
+                        <li><a className="page-navigator" href="#about" onClick={handleNavClick}>About</a></li>
+                        <li><a className="page-navigator" href="#experience" onClick={handleNavClick}>Experience</a></li>
+                        <li><a className="page-navigator" href="#projects" onClick={handleNavClick}>Public Projects</a></li>
                     </ul>
                 </nav>
 

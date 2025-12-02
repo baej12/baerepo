@@ -168,7 +168,7 @@ section {
     align-items: flex-start;
     align-content: stretch;
     margin-bottom: var(--spacing-3xl);
-    scroll-margin-top: var(--spacing-2xl);
+    scroll-margin-top: var(--header-top-offset, var(--spacing-2xl));
 }
 
 .section-heading {
@@ -178,6 +178,8 @@ section {
     color: var(--color-text-primary);
     position: relative;
     padding-bottom: var(--spacing-sm);
+    /* Ensure headings respect the header top offset when scrolled into view */
+    scroll-margin-top: var(--header-top-offset, var(--spacing-2xl));
 }
 
 .section-heading::after {
