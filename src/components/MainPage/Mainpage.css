@@ -24,6 +24,10 @@
     --font-size-3xl: 3rem;
 }
 
+/* Prevent layout from exceeding viewport width */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { width: 100%; overflow-x: hidden; }
+
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 70px;
@@ -59,6 +63,29 @@ html {
     .about-intro,
     .about-content {
         padding-left: 0 !important;
+    }
+}
+
+/* Extremely tall screens: center and stack to avoid right-lean */
+@media (min-height: 1800px) {
+    .mainpage {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-2xl);
+        max-width: 1000px;
+    }
+    .left-side,
+    .right-side,
+    section {
+        width: 100%;
+        max-width: 900px;
+        min-width: unset;
+    }
+    .left-side {
+        position: relative;
+        top: unset;
+        height: auto;
+        margin-bottom: var(--spacing-xl);
     }
 }
 
