@@ -1,10 +1,29 @@
 import './Mainpage.css';
 import { RepoList } from '../RepoList/RepoList';
-// import liicon from '../../assets/linkedinwhite.png';
-// import githubicon from '../../assets/githubwhite.png';
-// import { useEffect } from 'react';
+import { useEffect } from 'react';
 
 export const Mainpage = () => {
+    useEffect(() => {
+        const navLinks = document.querySelectorAll<HTMLAnchorElement>('.page-navigator');
+        const handler = (e: Event) => {
+            const anchor = e.currentTarget as HTMLAnchorElement;
+            const href = anchor.getAttribute('href') || '';
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // update URL hash without triggering an extra jump
+                    window.history.replaceState(null, '', href);
+                }
+            }
+        };
+        navLinks.forEach(link => link.addEventListener('click', handler));
+        return () => {
+            navLinks.forEach(link => link.removeEventListener('click', handler));
+        };
+    }, []);
+
     return <div className="mainpage">
         <div className="left-side">
             <div className="sticky-wrapper">
