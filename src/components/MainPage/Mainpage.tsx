@@ -5,24 +5,27 @@ import { RepoList } from '../RepoList/RepoList';
 // import { useEffect } from 'react';
 
 export const Mainpage = () => {
-    return <div className = "mainpage">
-        <div className = "left-side">
-            <span className = "header-item" style={{fontSize : '3rem', fontWeight: '700'}}>
-                Jung Hwan Bae
-            </span>
-            <br/>
-            <span className = "header-item" style={{fontSize: '1.75rem', paddingTop: '0.5rem'}}>
-                Aspiring Software Engineer
-            </span>
-            <span className = "header-item" style={{paddingTop: '1.25rem', color: 'rgb(200,200,200)'}}>
-                I am an avid learner that loves problem solving :)
-            </span>
+    return <div className="mainpage">
+        <div className="left-side">
+            <header className="header-section">
+                <h1 className="header-name">
+                    Jung Hwan Bae
+                </h1>
+                <h2 className="header-title">
+                    Aspiring Software Engineer
+                </h2>
+                <p className="header-tagline">
+                    I am an avid learner that loves problem solving :)
+                </p>
+            </header>
 
-            <ul className = "nav-items">
-                <li><a className="page-navigator" href="#about">About</a></li>
-                <li><a className="page-navigator" href="#experience">Experience</a></li>
-                <li><a className="page-navigator" href="#projects">Public Projects</a></li>
-            </ul>
+            <nav className="nav-items" aria-label="Page navigation">
+                <ul>
+                    <li><a className="page-navigator" href="#about">About</a></li>
+                    <li><a className="page-navigator" href="#experience">Experience</a></li>
+                    <li><a className="page-navigator" href="#projects">Public Projects</a></li>
+                </ul>
+            </nav>
 
             {/* <span style ={{position: "sticky", marginTop: "50vh"}}>
                 <a href="https://www.linkedin.com/in/jhbbae/">
@@ -39,43 +42,50 @@ export const Mainpage = () => {
                 </a>
             </span> */}
         </div>
-        <div className = "right-side">
-            <section id = "about">
-                <span className="right-side-item text-item" style={{display:'inline'}}>
-                    Hey y'all! Thanks for checking out my website! Feel free to call me Brandon. 
-                </span>
-                <span className="right-side-item text-item" style={{paddingTop: '2rem', display:'inline'}}>
-                    In 2019, I enrolled at the University of Nevada - Las Vegas. I pursued a <b>Bachelor of Science
-                    in Computer Science.</b> During my academic career, I had the privilege of interning at Credit One
-                    Bank as a <b>Full Stack Developer Intern</b>. My time there was a great learning experience and allowed
-                    me to peer into what my professional career will look like. In addition, I also worked as a student
-                    worker at the UNLV's Department of Geoscience as a <b>Student Web Developer.</b> During my time there, I
-                    was able to educate myself on creating webpages that were accessibility to those using assistive
-                    technologies. After graduating UNLV, I accepted a position at Raytheon as a <b>Software Engineer.</b>&nbsp;
-                    During my time there, I was able to work with an incredibly smart team that I was able to learn a lot
-                    from. Sadly, due to business reorganizations, my position was let go and I was laid off. Currently, I am
-                    contracted to Huntington Ingalls Industries via Insight Global as a <b>Software Engineer.</b>
-                </span>
-                {/* <span className="right-side-item text-item" style={{paddingTop: '2rem'}}>
-                    When I'm not grinding LeetCode or attempting CTF events, you'll usually find me 
-                    toiling away in Factorio or MineCraft. The factory must grow! The crops must be harvested!
-                </span> */}
+        <div className="right-side">
+            <section id="about" aria-labelledby="about-heading">
+                <h2 className="section-heading" id="about-heading">About</h2>
+                <p className="about-intro">
+                    Hi, thanks for stopping by! I go by Brandon.
+                </p>
+                <div className="about-content">
+                    <p>
+                        I studied at the University of Nevada, Las Vegas and earned a <strong>Bachelor of Science in Computer
+                        Science</strong>. Since then, I’ve been fortunate to learn from talented teams across industry and academia.
+                    </p>
+                    <p>
+                        At Credit One Bank, I served as a <strong>Full-Stack Developer Intern</strong>, building a React application and
+                        contributing API endpoints that supported a modernized mobile experience. At UNLV’s Department of
+                        Geoscience, I worked as a <strong>Student Web Developer</strong>, focusing on building accessible, standards-compliant
+                        webpages and improving support for users of assistive technologies.
+                    </p>
+                    <p>
+                        I later joined Raytheon as a <strong>Software Engineer</strong>, collaborating with an incredible team and growing my
+                        skills through hands-on engineering work.
+                    </p>
+                    <p>
+                        I’m a <strong>Software Engineer at Huntington Ingalls Industries</strong>, converted from a prior contract via Insight Global,
+                        where I’m building performant, user-friendly web applications. I love solving hard problems, learning quickly,
+                        and shipping polished, accessible experiences.
+                    </p>
+                </div>
             </section>
-            <section id = "experience" style={{paddingTop: '10rem'}}>
-                <span className="right-side-item text-item" style={{marginBottom:'10rem'}}>
-                    <div className="job-item">
-                        <h1>
-                            Insight Global (Contracted to Huntington Ingalls Industries)
-                        </h1>
-                        <h3>
-                            Software Engineer Consultant
+            <section id="experience" className="experience-section" aria-labelledby="experience-heading">
+                <h2 className="section-heading" id="experience-heading">Experience</h2>
+                <div className="experience-content">
+                    <article className="job-item">
+                        <h3 className="job-company">
+                            Huntington Ingalls Industries
                         </h3>
-                        <strong>Sep 2024 - Current</strong><br/><br/>
-                        <span>
-                        - Developed cutting-edge React based web application to satisfy customer requirements. <br/>
-                        - Assisted in deployment and testing of project from development to production environment. <br/>
-                        - Optimized JTT map to allow for significantly increased entity count without sacrificing quality. <br/>
-                        </span>
+                        <h4 className="job-title">
+                            Software Engineer
+                        </h4>
+                        <p className="job-period">Jun 2025 - Present</p>
+                        <ul className="job-description">
+                            <li>Developed cutting-edge React based web application to satisfy customer requirements.</li>
+                            <li>Assisted in deployment and testing of project from development to production environment.</li>
+                            <li>Optimized JTT map to allow for significantly increased entity count without sacrificing quality.</li>
+                        </ul>
                         <div className="job-skill-list">
                             <span className="job-skill">
                                 Javascript
@@ -93,34 +103,66 @@ export const Mainpage = () => {
                                 CI/CD
                             </span>
                         </div>
-                    </div>
-                    <div className="job-item">
-                        <h1>
-                            National Security Agency
-                        </h1>
-                        <h3>
-                            Conditional Job Offer as Software Engineer
+                    </article>
+                    <article className="job-item">
+                        <h3 className="job-company">
+                            Insight Global (Contracted to Huntington Ingalls Industries)
                         </h3>
-                        <strong>Feb 2024 - Sep 2024</strong><br/><br/>
-                        <span>
+                        <h4 className="job-title">
+                            Software Engineer Consultant
+                        </h4>
+                        <p className="job-period">Sep 2024 - Jun 2025</p>
+                        <p className="job-description-text">Contracted to HII on the same project prior to full-time conversion.</p>
+                        <ul className="job-description">
+                            <li>Developed cutting-edge React based web application to satisfy customer requirements.</li>
+                            <li>Assisted in deployment and testing of project from development to production environment.</li>
+                            <li>Optimized JTT map to allow for significantly increased entity count without sacrificing quality.</li>
+                        </ul>
+                        <div className="job-skill-list">
+                            <span className="job-skill">
+                                Javascript
+                            </span>
+                            <span className="job-skill">
+                                React
+                            </span>
+                            <span className="job-skill">
+                                Docker
+                            </span>
+                            <span className="job-skill">
+                                Cesium
+                            </span>
+                            <span className="job-skill">
+                                CI/CD
+                            </span>
+                        </div>
+                    </article>
+                    <article className="job-item">
+                        <h3 className="job-company">
+                            National Security Agency
+                        </h3>
+                        <h4 className="job-title">
+                            Conditional Job Offer as Software Engineer
+                        </h4>
+                        <p className="job-period">Feb 2024 - Sep 2024</p>
+                        <p className="job-description-text">
                             During this time period, I received a conditional job offer from the National Security Agency. However,
                             due to the lengthy investigation process, I elected to pursue employment elsewhere.
-                        </span>
-                    </div>
-                    <div className="job-item">
-                        <h1>
+                        </p>
+                    </article>
+                    <article className="job-item">
+                        <h3 className="job-company">
                             Raytheon
-                        </h1>
-                        <h3>
-                            Software Engineer P1
                         </h3>
-                        <strong>Oct 2023 - Feb 2024</strong><br/><br/>
-                        - Maintained and updated training material, documentation, and guides for commonly
-                            used department tools<br/>
-                        - Streamlined the onboarding process, significantly reducing assimilation time <br/>
-                        - Participated in technical review of various proprietary development applications <br/>
-                        - Contributed to the development of a model project showcasing departmental best
-                            practices for incorporating test executives into software and hardware <br/>
+                        <h4 className="job-title">
+                            Software Engineer P1
+                        </h4>
+                        <p className="job-period">Oct 2023 - Feb 2024</p>
+                        <ul className="job-description">
+                            <li>Maintained and updated training material, documentation, and guides for commonly used department tools</li>
+                            <li>Streamlined the onboarding process, significantly reducing assimilation time</li>
+                            <li>Participated in technical review of various proprietary development applications</li>
+                            <li>Contributed to the development of a model project showcasing departmental best practices for incorporating test executives into software and hardware</li>
+                        </ul>
                         <div className="job-skill-list">
                             <span className="job-skill">
                                 C#
@@ -135,19 +177,19 @@ export const Mainpage = () => {
                                 Azure DevOps
                             </span>
                         </div>
-                    </div>
-                    <div className="job-item">
-                        <h1>
+                    </article>
+                    <article className="job-item">
+                        <h3 className="job-company">
                             UNLV, Dept. of Geoscience
-                        </h1>
-                        <h3>
-                            Student Accessibility Web Developer
                         </h3>
-                        <strong>Jan 2023 - Sep 2023</strong><br/><br/>
-                        - Ensured equal access to information and functionality across FIA and DATIM
-                            websites by addressing accessibility violations defined by WCAG and Section 508<br/>
-                        - Created contingency website for UNLV FIA, providing the group with a redundant
-                            copy of essential information and functions from the primary site<br/>
+                        <h4 className="job-title">
+                            Student Accessibility Web Developer
+                        </h4>
+                        <p className="job-period">Jan 2023 - Sep 2023</p>
+                        <ul className="job-description">
+                            <li>Ensured equal access to information and functionality across FIA and DATIM websites by addressing accessibility violations defined by WCAG and Section 508</li>
+                            <li>Created contingency website for UNLV FIA, providing the group with a redundant copy of essential information and functions from the primary site</li>
+                        </ul>
                         <div className="job-skill-list">
                             <span className="job-skill">
                                 C#
@@ -171,19 +213,19 @@ export const Mainpage = () => {
                                 Git
                             </span>
                         </div>
-                    </div>
-                    <div className="job-item">
-                        <h1>
+                    </article>
+                    <article className="job-item">
+                        <h3 className="job-company">
                             Credit One Bank
-                        </h1>
-                        <h3>
-                            Full Stack Developer Intern
                         </h3>
-                        <strong>Jun 2022 - Jan 2023</strong><br/><br/>
-                        - Developed a React-based web application that would allow any user to calculate the
-                            payoff timeline for a user-defined number of loans<br/>
-                        - Deployed various endpoints for a RESTful API that will be utilized in the
-                            company’s modernized mobile website<br/>
+                        <h4 className="job-title">
+                            Full Stack Developer Intern
+                        </h4>
+                        <p className="job-period">Jun 2022 - Jan 2023</p>
+                        <ul className="job-description">
+                            <li>Developed a React-based web application that would allow any user to calculate the payoff timeline for a user-defined number of loans</li>
+                            <li>Deployed various endpoints for a RESTful API that will be utilized in the company's modernized mobile website</li>
+                        </ul>
                         <div className="job-skill-list">
                             <span className="job-skill">
                                 Java
@@ -210,18 +252,16 @@ export const Mainpage = () => {
                                 Git
                             </span>
                         </div>
-                    </div>
-                    <h1>
-                        {/* <a className="resume-link" href="https://personalsitefiles.blob.core.windows.net/professionalfiles/my-resume.pdf">
-                            Click here to view full resume
-                        </a> */}
-                        <a className="resume-link" href="https://personalsitefiles.blob.core.windows.net/professionalfiles/my-resume-2025.pdf">
-                            Click here to view full resume
+                    </article>
+                    <div className="resume-cta">
+                        <a className="resume-link" href="https://personalsitefiles.blob.core.windows.net/professionalfiles/my-resume-2025.pdf" target="_blank" rel="noopener noreferrer">
+                            View Full Resume →
                         </a>
-                    </h1>
-                </span>
+                    </div>
+                </div>
             </section>
-            <section id = "projects">
+            <section id="projects" className="projects-section" aria-labelledby="projects-heading">
+                <h2 className="section-heading" id="projects-heading">Projects</h2>
                 <RepoList items={[
                     {
                         name: "Design and Analysis Toolkit for Inventory and Monitoring (DATIM)",
