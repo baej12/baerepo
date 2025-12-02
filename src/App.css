@@ -26,6 +26,25 @@
   z-index: 1;
 }
 
+/* Fade mask at top and bottom edges */
+.App::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(to bottom, 
+      #0f172a 0%, 
+      transparent 4rem,
+      transparent calc(100% - 4rem),
+      #0f172a 100%
+    );
+  pointer-events: none;
+  z-index: 10;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
