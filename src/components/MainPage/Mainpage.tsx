@@ -7,40 +7,42 @@ import { RepoList } from '../RepoList/RepoList';
 export const Mainpage = () => {
     return <div className="mainpage">
         <div className="left-side">
-            <header className="header-section">
-                <h1 className="header-name">
-                    Jung Hwan Bae
-                </h1>
-                <h2 className="header-title">
-                    Aspiring Software Engineer
-                </h2>
-                <p className="header-tagline">
-                    I am an avid learner that loves problem solving :)
-                </p>
-            </header>
+            <div className="sticky-wrapper">
+                <header className="header-section">
+                    <h1 className="header-name">
+                        Jung Hwan Bae
+                    </h1>
+                    <h2 className="header-title">
+                        Aspiring Software Engineer
+                    </h2>
+                    <p className="header-tagline">
+                        I am an avid learner that loves problem solving :)
+                    </p>
+                </header>
 
-            <nav className="nav-items" aria-label="Page navigation">
-                <ul>
-                    <li><a className="page-navigator" href="#about">About</a></li>
-                    <li><a className="page-navigator" href="#experience">Experience</a></li>
-                    <li><a className="page-navigator" href="#projects">Public Projects</a></li>
-                </ul>
-            </nav>
+                <nav className="nav-items" aria-label="Page navigation">
+                    <ul>
+                        <li><a className="page-navigator" href="#about">About</a></li>
+                        <li><a className="page-navigator" href="#experience">Experience</a></li>
+                        <li><a className="page-navigator" href="#projects">Public Projects</a></li>
+                    </ul>
+                </nav>
 
-            {/* <span style ={{position: "sticky", marginTop: "50vh"}}>
-                <a href="https://www.linkedin.com/in/jhbbae/">
-                    <img src={liicon} width="42" height="42" style={{marginRight:'2rem'}} 
-                        alt = "go to linkedin profile"
-                        className = "soc-link"
-                    />
-                </a>
-                <a href="https://github.com/baej12">
-                    <img src={githubicon} width="42" height="42" style={{}}
-                        alt = "go to github profile"
-                        className = "soc-link"
-                    />
-                </a>
-            </span> */}
+                {/* <span style ={{position: "sticky", marginTop: "50vh"}}>
+                    <a href="https://www.linkedin.com/in/jhbbae/">
+                        <img src={liicon} width="42" height="42" style={{marginRight:'2rem'}} 
+                            alt = "go to linkedin profile"
+                            className = "soc-link"
+                        />
+                    </a>
+                    <a href="https://github.com/baej12">
+                        <img src={githubicon} width="42" height="42" style={{}}
+                            alt = "go to github profile"
+                            className = "soc-link"
+                        />
+                    </a>
+                </span> */}
+            </div>
         </div>
         <div className="right-side">
             <section id="about" aria-labelledby="about-heading">
