@@ -34,12 +34,81 @@ body {
 }
 
 /* Prevent layout from exceeding viewport width */
-*, *::before, *::after { box-sizing: border-box; }
+*, *::before, *::after { 
+    box-sizing: border-box;
+    cursor: none;
+}
+
 html, body { width: 100%; overflow-x: hidden; }
 
 html {
     scroll-behavior: smooth;
     scroll-padding-top: var(--spacing-2xl);
+}
+
+/* Custom Cursor Styles */
+.custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(139, 92, 246, 0.6) 50%, transparent 70%);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.6), 0 0 40px rgba(139, 92, 246, 0.4);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.custom-cursor.hover {
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, transparent 70%);
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.8), 0 0 60px rgba(139, 92, 246, 0.6);
+}
+
+.cursor-trail {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    animation: fadeOut 0.6s ease-out forwards;
+}
+
+.edge-particle {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 1) 0%, rgba(139, 92, 246, 0.8) 50%, transparent 70%);
+    pointer-events: none;
+    z-index: 9997;
+    animation: particleSplash 0.8s ease-out forwards;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+}
+
+@keyframes particleSplash {
+    to {
+        opacity: 0;
+        transform: translate(var(--tx, 0), var(--ty, 0)) scale(0);
+    }
 }
 
 /* Responsive layout adjustments - only for mobile/tablet */
