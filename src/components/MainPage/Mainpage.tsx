@@ -1,8 +1,10 @@
 import './Mainpage.css';
 import { RepoList } from '../RepoList/RepoList';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const Mainpage = () => {
+    const [activeSection, setActiveSection] = useState<string>('about');
+
     // compute header offset and expose as CSS variable so scroll-margin-top can handle alignment
     useEffect(() => {
         const getHeaderEl = () => document.querySelector('.header-name') as HTMLElement | null;
@@ -82,6 +84,34 @@ export const Mainpage = () => {
         return () => window.removeEventListener('hashchange', onHashChange);
     }, []);
 
+    // Track active section based on scroll position
+    useEffect(() => {
+        const sections = document.querySelectorAll('section[id]');
+        
+        const observer = new IntersectionObserver(
+            (entries) => {
+                // Find the most visible section
+                let mostVisible = entries[0];
+                entries.forEach((entry) => {
+                    if (entry.intersectionRatio > (mostVisible?.intersectionRatio || 0)) {
+                        mostVisible = entry;
+                    }
+                });
+                
+                if (mostVisible && mostVisible.isIntersecting) {
+                    setActiveSection(mostVisible.target.id);
+                }
+            },
+            {
+                threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                rootMargin: '-10% 0px -70% 0px',
+            }
+        );
+
+        sections.forEach((section) => observer.observe(section));
+        return () => observer.disconnect();
+    }, []);
+
     const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
         const anchor = e.currentTarget as HTMLAnchorElement;
@@ -97,7 +127,8 @@ export const Mainpage = () => {
 
         // Use scrollIntoView with scroll-margin-top (set by CSS variable) to align top edge with header
         (referenceEl as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.replaceState(null, '', href);
+        const { pathname, search } = window.location;
+        window.history.replaceState(null, '', `${pathname}${search}${href}`);
     };
 
     return <div className="mainpage">
@@ -117,9 +148,9 @@ export const Mainpage = () => {
 
                 <nav className="nav-items" aria-label="Page navigation">
                     <ul>
-                        <li><a className="page-navigator" href="#about" onClick={handleNavClick}>About</a></li>
-                        <li><a className="page-navigator" href="#experience" onClick={handleNavClick}>Experience</a></li>
-                        <li><a className="page-navigator" href="#projects" onClick={handleNavClick}>Public Projects</a></li>
+                        <li><a className={`page-navigator ${activeSection === 'about' ? 'active' : ''}`} href="#about" onClick={handleNavClick}>About</a></li>
+                        <li><a className={`page-navigator ${activeSection === 'experience' ? 'active' : ''}`} href="#experience" onClick={handleNavClick}>Experience</a></li>
+                        <li><a className={`page-navigator ${activeSection === 'projects' ? 'active' : ''}`} href="#projects" onClick={handleNavClick}>Public Projects</a></li>
                     </ul>
                 </nav>
 
