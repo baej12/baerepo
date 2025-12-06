@@ -1,0 +1,70 @@
+[
+  {
+    "id": "hii-2025",
+    "company": "Huntington Ingalls Industries",
+    "title": "Software Engineer",
+    "period": "Jun 2025 - Present",
+    "description": [
+      "Continue work done during contract period, focusing on building performant, user-friendly web applications.",
+      "Lead effort among variety of teams to update and deploy JTT Core"
+    ],
+    "skills": ["Javascript", "React", "Docker", "Cesium", "CI/CD", "Java", "Spring", "Kubernetes"]
+  },
+  {
+    "id": "insight-global-2024",
+    "company": "Insight Global (Contracted to Huntington Ingalls Industries)",
+    "title": "Software Engineer Consultant",
+    "period": "Sep 2024 - Jun 2025",
+    "descriptionText": "Contracted to HII on the same project prior to full-time conversion.",
+    "description": [
+      "Developed cutting-edge React based web application to satisfy customer requirements.",
+      "Assisted in deployment and testing of project from development to production environment.",
+      "Optimized JTT map to allow for significantly increased entity count without sacrificing quality."
+    ],
+    "skills": ["Javascript", "React", "Docker", "Cesium", "CI/CD"]
+  },
+  {
+    "id": "nsa-2024",
+    "company": "National Security Agency",
+    "title": "Conditional Job Offer as Software Engineer",
+    "period": "Feb 2024 - Sep 2024",
+    "descriptionText": "During this time period, I received a conditional job offer from the National Security Agency. However, due to the lengthy investigation process, I elected to pursue employment elsewhere.",
+    "description": [],
+    "skills": []
+  },
+  {
+    "id": "raytheon-2023",
+    "company": "Raytheon",
+    "title": "Software Engineer P1",
+    "period": "Oct 2023 - Feb 2024",
+    "description": [
+      "Maintained and updated training material, documentation, and guides for commonly used department tools",
+      "Streamlined the onboarding process, significantly reducing assimilation time",
+      "Participated in technical review of various proprietary development applications",
+      "Contributed to the development of a model project showcasing departmental best practices for incorporating test executives into software and hardware"
+    ],
+    "skills": ["C#", "ATEasy", "Test Stand", "Azure DevOps"]
+  },
+  {
+    "id": "unlv-2023",
+    "company": "UNLV, Dept. of Geoscience",
+    "title": "Student Accessibility Web Developer",
+    "period": "Jan 2023 - Sep 2023",
+    "description": [
+      "Ensured equal access to information and functionality across FIA and DATIM websites by addressing accessibility violations defined by WCAG and Section 508",
+      "Created contingency website for UNLV FIA, providing the group with a redundant copy of essential information and functions from the primary site"
+    ],
+    "skills": ["C#", "JavaScript", "JQuery", "ASP.NET", "HTML", "CSS", "Git"]
+  },
+  {
+    "id": "credit-one-2022",
+    "company": "Credit One Bank",
+    "title": "Full Stack Developer Intern",
+    "period": "Jun 2022 - Jan 2023",
+    "description": [
+      "Developed a React-based web application that would allow any user to calculate the payoff timeline for a user-defined number of loans",
+      "Deployed various endpoints for a RESTful API that will be utilized in the company's modernized mobile website"
+    ],
+    "skills": ["Java", "TypeScript", "React.js", "Spring", "PostgreSQL", "HTML", "CSS", "Git"]
+  }
+]
