@@ -1,5 +1,6 @@
 import './Mainpage.css';
 import { RepoList } from '../RepoList/RepoList';
+import { PdfViewer } from '../PdfViewer/PdfViewer';
 import React, { useEffect, useState, useRef } from 'react';
 
 const Mainpage: React.FC = () => {
@@ -9,6 +10,7 @@ const Mainpage: React.FC = () => {
     const manualScrollTargetRef = useRef<string | null>(null);
     const manualScrollTimerRef = useRef<number | null>(null);
     const [sections, setSections] = useState<{ id: string; label: string }[]>([]);
+    const [showPdfViewer, setShowPdfViewer] = useState<boolean>(false);
 
     // compute header offset and expose as CSS variable so scroll-margin-top can handle alignment
     useEffect(() => {
@@ -570,9 +572,9 @@ const Mainpage: React.FC = () => {
                         </div>
                     </article>
                     <div className="resume-cta">
-                        <a className="resume-link" href="https://personalsitefiles.blob.core.windows.net/professionalfiles/my-resume-2025.pdf" target="_blank" rel="noopener noreferrer">
+                        <button className="resume-link" onClick={() => setShowPdfViewer(true)}>
                             View Full Resume →
-                        </a>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -597,6 +599,12 @@ const Mainpage: React.FC = () => {
                 ]}/>
             </section>
         </div>
+        {showPdfViewer && (
+            <PdfViewer 
+                url="https://personalsitefiles.blob.core.windows.net/professionalfiles/my-resume-2025.pdf"
+                onClose={() => setShowPdfViewer(false)}
+            />
+        )}
         </div>
     );
 };
