@@ -86,30 +86,48 @@ export const Mainpage = () => {
 
     // Track active section based on scroll position
     useEffect(() => {
-        const sections = document.querySelectorAll('section[id]');
+        const sections = Array.from(document.querySelectorAll('section[id]')) as HTMLElement[];
+        if (sections.length === 0) return;
+        
+        // Store all observed entries
+        const sectionMap = new Map<Element, IntersectionObserverEntry>();
         
         const observer = new IntersectionObserver(
-            (entries) => {
-                // Find the most visible section
-                let mostVisible = entries[0];
-                entries.forEach((entry) => {
-                    if (entry.intersectionRatio > (mostVisible?.intersectionRatio || 0)) {
+            (entries: IntersectionObserverEntry[]) => {
+                // Update the map with latest entries
+                entries.forEach(entry => {
+                    sectionMap.set(entry.target, entry);
+                });
+                
+                // Find the section with the highest intersection ratio among ALL observed sections
+                let mostVisible: IntersectionObserverEntry | null = null;
+                let maxRatio = 0;
+                let activeSectionId = '';
+                
+                Array.from(sectionMap.values()).forEach((entry: IntersectionObserverEntry) => {
+                    if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+                        maxRatio = entry.intersectionRatio;
                         mostVisible = entry;
+                        activeSectionId = (entry.target as HTMLElement).id;
                     }
                 });
                 
-                if (mostVisible && mostVisible.isIntersecting) {
-                    setActiveSection(mostVisible.target.id);
+                // Update active section to the most visible one
+                if (mostVisible && activeSectionId) {
+                    setActiveSection(activeSectionId);
                 }
             },
             {
                 threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-                rootMargin: '-10% 0px -70% 0px',
+                rootMargin: '0px 0px -66% 0px',
             }
         );
 
         sections.forEach((section) => observer.observe(section));
-        return () => observer.disconnect();
+        return () => {
+            observer.disconnect();
+            sectionMap.clear();
+        };
     }, []);
 
     const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -124,6 +142,10 @@ export const Mainpage = () => {
         const sectionHeading = (target.querySelector('.section-heading') as HTMLElement | null)
             || (target.querySelector('h2, h3, h1') as HTMLElement | null);
         const referenceEl = sectionHeading || target;
+
+        // Immediately set the active section when clicking
+        const sectionId = href.slice(1);
+        setActiveSection(sectionId);
 
         // Use scrollIntoView with scroll-margin-top (set by CSS variable) to align top edge with header
         (referenceEl as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
