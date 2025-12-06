@@ -1,9 +1,14 @@
 import './Mainpage.css';
 import { RepoList } from '../RepoList/RepoList';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
-export const Mainpage = () => {
+const Mainpage: React.FC = () => {
     const [activeSection, setActiveSection] = useState<string>('about');
+    const activeSectionRef = useRef<string>('about');
+    const manualScrollRef = useRef<boolean>(false);
+    const manualScrollTargetRef = useRef<string | null>(null);
+    const manualScrollTimerRef = useRef<number | null>(null);
+    const [sections, setSections] = useState<{ id: string; label: string }[]>([]);
 
     // compute header offset and expose as CSS variable so scroll-margin-top can handle alignment
     useEffect(() => {
@@ -84,49 +89,185 @@ export const Mainpage = () => {
         return () => window.removeEventListener('hashchange', onHashChange);
     }, []);
 
-    // Track active section based on scroll position
+    // Build nav sections list dynamically from document sections with an id
     useEffect(() => {
-        const sections = Array.from(document.querySelectorAll('section[id]')) as HTMLElement[];
-        if (sections.length === 0) return;
-        
-        // Store all observed entries
-        const sectionMap = new Map<Element, IntersectionObserverEntry>();
-        
-        const observer = new IntersectionObserver(
-            (entries: IntersectionObserverEntry[]) => {
-                // Update the map with latest entries
-                entries.forEach(entry => {
-                    sectionMap.set(entry.target, entry);
-                });
-                
-                // Find the section with the highest intersection ratio among ALL observed sections
-                let mostVisible: IntersectionObserverEntry | null = null;
-                let maxRatio = 0;
-                let activeSectionId = '';
-                
-                Array.from(sectionMap.values()).forEach((entry: IntersectionObserverEntry) => {
-                    if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-                        maxRatio = entry.intersectionRatio;
-                        mostVisible = entry;
-                        activeSectionId = (entry.target as HTMLElement).id;
-                    }
-                });
-                
-                // Update active section to the most visible one
-                if (mostVisible && activeSectionId) {
-                    setActiveSection(activeSectionId);
-                }
-            },
-            {
-                threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-                rootMargin: '0px 0px -66% 0px',
-            }
-        );
+        const els = Array.from(document.querySelectorAll('section[id]')) as HTMLElement[];
+        const secs = els.map(el => {
+            const heading = (el.querySelector('.section-heading') as HTMLElement | null)
+                || (el.querySelector('h2, h3, h1') as HTMLElement | null);
+            const label = heading ? (heading.textContent || el.id) : el.id;
+            return { id: el.id, label: label.trim() };
+        });
+        setSections(secs);
+    }, []);
 
-        sections.forEach((section) => observer.observe(section));
+    // Detect sections and track active section based on scroll position (visible-height based)
+    useEffect(() => {
+        const sectionEls = Array.from(document.querySelectorAll('section[id]')) as HTMLElement[];
+        if (sectionEls.length === 0) return;
+
+        let rafId: number | null = null;
+        let scrollContainer: Window | HTMLElement = window;
+
+        // find the actual scrollable ancestor (if any) of the first section
+        const findScrollContainer = (el: HTMLElement | null): Window | HTMLElement => {
+            let cur: HTMLElement | null = el;
+            while (cur && cur !== document.body && cur !== document.documentElement) {
+                const style = window.getComputedStyle(cur);
+                const overflowY = style.overflowY;
+                if (overflowY === 'auto' || overflowY === 'scroll') return cur;
+                cur = cur.parentElement;
+            }
+            return window;
+        };
+
+        scrollContainer = findScrollContainer(sectionEls[0]);
+
+        const updateActiveFromScroll = () => {
+            const isWindow = scrollContainer === window;
+            const vh = isWindow ? window.innerHeight : (scrollContainer as HTMLElement).clientHeight;
+            let bestId = sectionEls[0].id;
+
+            // Get header position for top-alignment reference
+            const header = document.querySelector('.header-name') as HTMLElement | null;
+            const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
+            const threshold = headerBottom + 50; // 50px below header
+
+            // Find the first section whose top is at or above the threshold with visible content
+            // OR the first section that's currently visible
+            let foundSection = false;
+            for (const el of sectionEls) {
+                const r = el.getBoundingClientRect();
+                const visibleTop = Math.max(r.top, 0);
+                const visibleBottom = Math.min(r.bottom, vh);
+                const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+                
+                // If section has any visibility and its top is at/above threshold, it's the active one
+                if (visibleHeight > 0 && r.top <= threshold) {
+                    bestId = el.id;
+                    foundSection = true;
+                    // Don't break - keep going to find the last one above threshold
+                }
+            }
+            
+            // If no section was above threshold, use the first visible one
+            if (!foundSection) {
+                for (const el of sectionEls) {
+                    const r = el.getBoundingClientRect();
+                    const visibleTop = Math.max(r.top, 0);
+                    const visibleBottom = Math.min(r.bottom, vh);
+                    const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+                    
+                    if (visibleHeight > 0) {
+                        bestId = el.id;
+                        break;
+                    }
+                }
+            }
+
+            // If a manual nav click just triggered a smooth scroll, avoid immediately
+            // overriding the clicked active state until the target becomes noticeably visible
+            if (manualScrollRef.current) {
+                const target = manualScrollTargetRef.current;
+                // If the target has become the best visible and is noticeably visible, accept it
+                if (target && bestId === target) {
+                    manualScrollRef.current = false;
+                    manualScrollTargetRef.current = null;
+                    if (manualScrollTimerRef.current !== null) {
+                        window.clearTimeout(manualScrollTimerRef.current);
+                        manualScrollTimerRef.current = null;
+                    }
+                    if (activeSectionRef.current !== bestId) {
+                        activeSectionRef.current = bestId;
+                        setActiveSection(bestId);
+                        // If a nav item still has focus from a recent click, blur it
+                        const ae = document.activeElement as HTMLElement | null;
+                        if (ae && ae.classList && ae.classList.contains('page-navigator')) {
+                            ae.blur();
+                        }
+                    }
+                }
+                // otherwise wait until the user scroll finishes or the timeout clears the manual flag
+                return;
+            }
+
+            if (activeSectionRef.current !== bestId) {
+                activeSectionRef.current = bestId;
+                setActiveSection(bestId);
+                const ae = document.activeElement as HTMLElement | null;
+                if (ae && ae.classList && ae.classList.contains('page-navigator')) {
+                    ae.blur();
+                }
+            }
+        };
+
+        const onScroll = () => {
+            if (rafId !== null) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(updateActiveFromScroll);
+        };
+
+        // Short polling fallback: start brief RAF-driven polling when user interaction is detected
+        const pollingRef = { id: null as number | null };
+        const startPolling = () => {
+            if (pollingRef.id !== null) return;
+            let start = performance.now();
+            const tick = () => {
+                updateActiveFromScroll();
+                if (performance.now() - start < 800) {
+                    pollingRef.id = requestAnimationFrame(tick);
+                } else {
+                    if (pollingRef.id !== null) cancelAnimationFrame(pollingRef.id);
+                    pollingRef.id = null;
+                }
+            };
+            pollingRef.id = requestAnimationFrame(tick);
+        };
+
+        if (scrollContainer === window) {
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll);
+            // also listen for wheel/touch events as a fallback
+            window.addEventListener('wheel', onScroll, { passive: true });
+            window.addEventListener('touchmove', onScroll, { passive: true });
+            // trigger short polling on wheel/touchstart for cases where scroll events are suppressed
+            window.addEventListener('wheel', startPolling, { passive: true });
+            window.addEventListener('touchstart', startPolling, { passive: true });
+            document.addEventListener('scroll', onScroll, { passive: true });
+        } else {
+            const sc = scrollContainer as HTMLElement;
+            sc.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', onScroll);
+            sc.addEventListener('wheel', onScroll, { passive: true });
+            sc.addEventListener('touchmove', onScroll, { passive: true });
+            sc.addEventListener('wheel', startPolling, { passive: true });
+            sc.addEventListener('touchstart', startPolling, { passive: true });
+            // also listen to document scroll as a last resort
+            document.addEventListener('scroll', onScroll, { passive: true });
+        }
+
+        // initial check
+        updateActiveFromScroll();
+
         return () => {
-            observer.disconnect();
-            sectionMap.clear();
+            if (scrollContainer === window) {
+                window.removeEventListener('scroll', onScroll);
+                window.removeEventListener('resize', onScroll);
+                window.removeEventListener('wheel', onScroll);
+                window.removeEventListener('touchmove', onScroll);
+                window.removeEventListener('wheel', startPolling);
+                window.removeEventListener('touchstart', startPolling);
+                document.removeEventListener('scroll', onScroll);
+            } else {
+                (scrollContainer as HTMLElement).removeEventListener('scroll', onScroll);
+                window.removeEventListener('resize', onScroll);
+                (scrollContainer as HTMLElement).removeEventListener('wheel', onScroll);
+                (scrollContainer as HTMLElement).removeEventListener('touchmove', onScroll);
+                (scrollContainer as HTMLElement).removeEventListener('wheel', startPolling);
+                (scrollContainer as HTMLElement).removeEventListener('touchstart', startPolling);
+                document.removeEventListener('scroll', onScroll);
+            }
+            if (rafId !== null) cancelAnimationFrame(rafId);
+            if (pollingRef.id !== null) cancelAnimationFrame(pollingRef.id);
         };
     }, []);
 
@@ -145,6 +286,24 @@ export const Mainpage = () => {
 
         // Immediately set the active section when clicking
         const sectionId = href.slice(1);
+        // click registered
+
+        // Mark that a manual (click-initiated) scroll is in progress so the scroll
+        // updater won't immediately override the clicked state.
+        manualScrollRef.current = true;
+        manualScrollTargetRef.current = sectionId;
+        if (manualScrollTimerRef.current !== null) {
+            window.clearTimeout(manualScrollTimerRef.current);
+            manualScrollTimerRef.current = null;
+        }
+        manualScrollTimerRef.current = window.setTimeout(() => {
+            manualScrollRef.current = false;
+            manualScrollTargetRef.current = null;
+            manualScrollTimerRef.current = null;
+        }, 1400);
+
+        // Immediately set active section so click feedback is instant.
+        activeSectionRef.current = sectionId;
         setActiveSection(sectionId);
 
         // Use scrollIntoView with scroll-margin-top (set by CSS variable) to align top edge with header
@@ -153,7 +312,8 @@ export const Mainpage = () => {
         window.history.replaceState(null, '', `${pathname}${search}${href}`);
     };
 
-    return <div className="mainpage">
+    return (
+        <div className="mainpage">
         <div className="left-side">
             <div className="sticky-wrapper">
                 <header className="header-section">
@@ -169,11 +329,17 @@ export const Mainpage = () => {
                 </header>
 
                 <nav className="nav-items" aria-label="Page navigation">
-                    <ul>
-                        <li><a className={`page-navigator ${activeSection === 'about' ? 'active' : ''}`} href="#about" onClick={handleNavClick}>About</a></li>
-                        <li><a className={`page-navigator ${activeSection === 'experience' ? 'active' : ''}`} href="#experience" onClick={handleNavClick}>Experience</a></li>
-                        <li><a className={`page-navigator ${activeSection === 'projects' ? 'active' : ''}`} href="#projects" onClick={handleNavClick}>Public Projects</a></li>
-                    </ul>
+                        <ul>
+                            {sections.length > 0 ? sections.map(s => (
+                                <li key={s.id}><a className={`page-navigator ${activeSection === s.id ? 'active' : ''}`} href={`#${s.id}`} onClick={handleNavClick}>{s.label}</a></li>
+                            )) : (
+                                <>
+                                    <li><a className={`page-navigator ${activeSection === 'about' ? 'active' : ''}`} href="#about" onClick={handleNavClick}>About</a></li>
+                                    <li><a className={`page-navigator ${activeSection === 'experience' ? 'active' : ''}`} href="#experience" onClick={handleNavClick}>Experience</a></li>
+                                    <li><a className={`page-navigator ${activeSection === 'projects' ? 'active' : ''}`} href="#projects" onClick={handleNavClick}>Public Projects</a></li>
+                                </>
+                            )}
+                        </ul>
                 </nav>
 
                 {/* <span style ={{position: "sticky", marginTop: "50vh"}}>
@@ -431,5 +597,8 @@ export const Mainpage = () => {
                 ]}/>
             </section>
         </div>
-    </div>
-}
+        </div>
+    );
+};
+
+export default Mainpage;
