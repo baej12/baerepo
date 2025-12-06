@@ -364,7 +364,7 @@ const Mainpage: React.FC = () => {
             <section id="about" aria-labelledby="about-heading">
                 <h2 className="section-heading" id="about-heading">About</h2>
                 <p className="about-intro">
-                    Hi, thanks for stopping by! I go by Brandon.
+                    Hi y'all, thanks for stopping by! Feel free to call me Brandon.
                 </p>
                 <div className="about-content">
                     <p>
@@ -372,8 +372,8 @@ const Mainpage: React.FC = () => {
                         Science</strong>. Since then, I’ve been fortunate to learn from talented teams across industry and academia.
                     </p>
                     <p>
-                        At Credit One Bank, I served as a <strong>Full-Stack Developer Intern</strong>, building a React application and
-                        contributing API endpoints that supported a modernized mobile experience. At UNLV’s Department of
+                        At Credit One Bank, I interned as a <strong>Full-Stack Developer Intern</strong>, building React applications and
+                        API endpoints that supported an effort to modernize the company's mobile experience. At UNLV’s Department of
                         Geoscience, I worked as a <strong>Student Web Developer</strong>, focusing on building accessible, standards-compliant
                         webpages and improving support for users of assistive technologies.
                     </p>
@@ -382,9 +382,11 @@ const Mainpage: React.FC = () => {
                         skills through hands-on engineering work.
                     </p>
                     <p>
-                        I’m a <strong>Software Engineer at Huntington Ingalls Industries</strong>, converted from a prior contract via Insight Global,
-                        where I’m building performant, user-friendly web applications. I love solving hard problems, learning quickly,
-                        and shipping polished, accessible experiences.
+                        Currently, I am <strong>Software Engineer at Huntington Ingalls Industries</strong>, converted from a prior contract at Insight Global,
+                        where I’m building performant, user-friendly web applications.
+                    </p>
+                    <p>
+                        I love solving hard problems, learning quickly, and shipping polished, accessible experiences.
                     </p>
                 </div>
             </section>
@@ -400,9 +402,8 @@ const Mainpage: React.FC = () => {
                         </h4>
                         <p className="job-period">Jun 2025 - Present</p>
                         <ul className="job-description">
-                            <li>Developed cutting-edge React based web application to satisfy customer requirements.</li>
-                            <li>Assisted in deployment and testing of project from development to production environment.</li>
-                            <li>Optimized JTT map to allow for significantly increased entity count without sacrificing quality.</li>
+                            <li>Continue work done during contract period, focusing on building performant, user-friendly web applications.</li>
+                            <li>Lead effort among variety of teams to update and deploy JTT Core</li>
                         </ul>
                         <div className="job-skill-list">
                             <span className="job-skill">
@@ -419,6 +420,15 @@ const Mainpage: React.FC = () => {
                             </span>
                             <span className="job-skill">
                                 CI/CD
+                            </span>
+                            <span className="job-skill">
+                                Java
+                            </span>
+                            <span className="job-skill">
+                                Spring
+                            </span>
+                            <span className="job-skill">
+                                Kubernetes
                             </span>
                         </div>
                     </article>
