@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 export const CustomCursor = () => {
     const cursorRef = useRef<HTMLDivElement>(null);
     const trailTimerRef = useRef<number>(0);
+    const clickTimeoutRef = useRef<number>(0);
 
     useEffect(() => {
         const cursor = cursorRef.current;
@@ -77,6 +78,27 @@ export const CustomCursor = () => {
             }
         };
 
+        const handleMouseDown = () => {
+            cursor.classList.add('click');
+        };
+
+        const handleMouseUp = () => {
+            // Clear existing timeout
+            if (clickTimeoutRef.current) {
+                clearTimeout(clickTimeoutRef.current);
+            }
+            
+            // Delay removal for smooth fade back to default
+            clickTimeoutRef.current = window.setTimeout(() => {
+                cursor.classList.remove('click');
+            }, 200);
+        };
+
+        const handleDragStart = (e: DragEvent) => {
+            e.preventDefault();
+            return false;
+        };
+
         const animate = () => {
             const dx = mouseX - cursorX;
             const dy = mouseY - cursorY;
@@ -92,11 +114,20 @@ export const CustomCursor = () => {
 
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseover', handleMouseOver);
+        document.addEventListener('mousedown', handleMouseDown);
+        document.addEventListener('mouseup', handleMouseUp);
+        document.addEventListener('dragstart', handleDragStart);
         animate();
 
         return () => {
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseover', handleMouseOver);
+            document.removeEventListener('mousedown', handleMouseDown);
+            document.removeEventListener('mouseup', handleMouseUp);
+            document.removeEventListener('dragstart', handleDragStart);
+            if (clickTimeoutRef.current) {
+                clearTimeout(clickTimeoutRef.current);
+            }
         };
     }, []);
 
