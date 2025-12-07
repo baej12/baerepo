@@ -57,7 +57,7 @@ export const RepoList = memo((props: IRepoList) => {
                 </p>
                 {item.language && (
                     <div className="job-skill-list">
-                        <span className="job-skill">{item.language}</span>
+                        <span className="job-skill minimal">{item.language}</span>
                     </div>
                 )}
             </a>
@@ -79,7 +79,7 @@ export const RepoList = memo((props: IRepoList) => {
                     </p>
                     <div className="job-skill-list">
                         {item.skills ? item.skills.map((skill, skillIndex) => (
-                            <span key={'i' + skillIndex} className="job-skill">{skill}</span>
+                            <span key={'i' + skillIndex} className="job-skill minimal">{skill}</span>
                         )): null}
                     </div>
                 </a>
@@ -91,7 +91,7 @@ export const RepoList = memo((props: IRepoList) => {
                     </p>
                     <div className="job-skill-list">
                         {item.skills ? item.skills.map((skill, skillIndex) => (
-                            <span key={'i' + skillIndex} className="job-skill">{skill}</span>
+                            <span key={'i' + skillIndex} className="job-skill minimal">{skill}</span>
                         )): null}
                     </div>
                 </article>

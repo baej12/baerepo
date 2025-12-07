@@ -28,7 +28,7 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ jobs }) =>
                         {job.skills.length > 0 && (
                             <div className="job-skill-list">
                                 {job.skills.map((skill, idx) => (
-                                    <span key={idx} className="job-skill">{skill}</span>
+                                    <span key={idx} className="job-skill minimal">{skill}</span>
                                 ))}
                             </div>
                         )}

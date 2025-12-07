@@ -152,17 +152,8 @@
     outline-color: var(--color-secondary, #8b5cf6);
 }
 
-/* Different tag color treatment for projects */
-.projects-section .job-skill {
-    border-color: rgba(139, 92, 246, 0.35);
-    background: rgba(139, 92, 246, 0.12);
-    color: var(--color-secondary, #8b5cf6);
-}
-
-.projects-section .job-skill:hover {
-    background: rgba(139, 92, 246, 0.2);
-    border-color: rgba(139, 92, 246, 0.5);
-}
+/* projects-section tag styling intentionally left to the shared .job-skill / .job-skill.minimal rules
+   so project skills inherit the same visual style as experience skills. */
 
 /* Subtle external-link glyph on linked project cards */
 .projects-section a.project-card {

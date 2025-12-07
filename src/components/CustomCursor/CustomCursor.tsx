@@ -71,7 +71,8 @@ export const CustomCursor = () => {
                 target.closest('a') || target.closest('button') ||
                 target.classList.contains('job-item') ||
                 target.classList.contains('project-card') ||
-                target.classList.contains('page-navigator')) {
+                target.classList.contains('page-navigator') ||
+                target.classList.contains('resume-link')) {
                 cursor.classList.add('hover');
             } else {
                 cursor.classList.remove('hover');
