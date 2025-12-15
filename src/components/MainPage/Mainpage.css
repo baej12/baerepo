@@ -116,6 +116,16 @@ html {
     .edge-particle { display: none !important; }
 }
 
+/* Desktop: hide the native OS cursor when using the custom cursor visuals.
+   Keep cursor for interactive controls so users can still see text cursors and focus. */
+@media (hover: hover) and (pointer: fine) {
+    html, body, .App, .mainpage { cursor: none !important; }
+    /* Ensure interactive elements keep their normal cursors */
+    a, button, input, textarea, select, label, summary, .page-navigator, .NavBar-Items-Item {
+        cursor: auto !important;
+    }
+}
+
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
