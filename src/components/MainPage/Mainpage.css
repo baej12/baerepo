@@ -121,8 +121,9 @@ html {
 @media (hover: hover) and (pointer: fine) {
     html, body, .App, .mainpage { cursor: none !important; }
     /* Ensure interactive elements keep their normal cursors */
+    /* Keep OS cursor hidden even over interactive controls */
     a, button, input, textarea, select, label, summary, .page-navigator, .NavBar-Items-Item {
-        cursor: auto !important;
+        cursor: none !important;
     }
 }
 

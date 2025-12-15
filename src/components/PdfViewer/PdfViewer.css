@@ -46,7 +46,8 @@
 }
 
 .pdf-viewer-close {
-    position: absolute;
+    /* place the close button at the top-right of the viewport for easier access */
+    position: fixed;
     top: 1rem;
     right: 1rem;
     width: 40px;
@@ -61,7 +62,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10;
+    z-index: 10001; /* ensure it's above overlay */
     transition: background 0.2s ease;
 }
 
@@ -84,4 +85,29 @@
     .pdf-viewer-overlay {
         padding: 0;
     }
+    .pdf-viewer-close {
+        top: 0.5rem;
+        right: 0.5rem;
+        width: 36px;
+        height: 36px;
+        font-size: 1.5rem;
+    }
+}
+
+/* When PDF is open, restore the OS cursor so users can interact with the iframe content naturally. 
+   This selector has higher specificity than the global cursor: none rule. */
+html body.pdf-open, body.pdf-open, body.pdf-open .App, body.pdf-open .mainpage {
+    cursor: auto !important;
+}
+
+/* While the PDF viewer is open, hide the site's custom cursor visuals so the OS cursor is the only pointer shown. */
+body.pdf-open .custom-cursor,
+body.pdf-open .cursor-trail,
+body.pdf-open .edge-particle {
+    display: none !important;
+}
+
+/* Also ensure the close button always shows a pointer on hover when PDF is open */
+body.pdf-open .pdf-viewer-close {
+    cursor: pointer !important;
 }
