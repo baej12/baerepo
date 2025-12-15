@@ -2,19 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
 .NavBar-Parent {
-  margin-top: 2rem;
+  margin: 2rem auto 0 auto;
   border-radius: 1rem;
   background-color: white;
-  border:0.3rem solid blue;
-  border-color:grey;
+  border: 0.15rem solid rgba(128,128,128,0.6);
   display:flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   align-content: center;
   height: 4rem;
-  width: 70vw;
-  min-width:50rem;
+  width: 90%;
+  max-width: 1100px;
+  padding: 0 1rem;
 }
 
 .NavBar-Logo {
@@ -25,18 +25,16 @@
 
 .NavBar-Items {
   font-family: 'Roboto', monospace;
-  font-size: 2rem;
+  font-size: 1.1rem;
   color: black;
- 	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	justify-content: space-evenly;
-	align-items: center;
-	align-content: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  align-content: center;
   width: 100%;
   margin-left:1rem;
-  border-radius:-2rem;
-  border-color:grey;
 }
 
 .NavBar-Items-Item:hover {
@@ -44,10 +42,8 @@
 }
 
 .NavBar-Items-Item {
-  /* margin-left: 5%;
-  margin-right: 5%; */
   margin-left: 1rem;
-  margin-right: 2rem;
+  margin-right: 1rem;
   text-decoration: none;
 }
 
@@ -57,4 +53,15 @@
 
 .unselectable {
     user-select: none;
+}
+
+/* Small screens: reduce sizes and allow wrapping */
+@media (max-width: 768px) {
+  .NavBar-Parent {
+    height: auto;
+    padding: 0.5rem 0.75rem;
+  }
+  .NavBar-Logo { max-width: 3rem; max-height: 2rem; }
+  .NavBar-Items { font-size: 1rem; justify-content: flex-end; gap: 0.5rem; }
+  .NavBar-Items-Item { margin: 0.25rem 0.5rem; }
 }

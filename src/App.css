@@ -63,3 +63,10 @@
 .App-link {
   color: #61dafb;
 }
+
+/* Avoid fixed background on mobile for performance */
+@media (max-width: 768px) {
+  .App {
+    background-attachment: scroll;
+  }
+}
