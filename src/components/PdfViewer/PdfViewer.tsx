@@ -26,7 +26,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
             } catch (e) {}
             document.removeEventListener('keydown', handleKey);
         };
-    }, []);
+    }, [onClose]);
 
     return (
         <div className="pdf-viewer-overlay" onClick={onClose}>
