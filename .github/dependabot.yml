@@ -1,0 +1,52 @@
+version: 2
+updates:
+  # Enable version updates for npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "baej12"
+    
+    # Group related updates
+    groups:
+      patch-updates:
+        dependency-type: "patch"
+        update-types:
+          - "patch"
+      
+      minor-updates:
+        dependency-type: "minor"
+        update-types:
+          - "minor"
+      
+      major-updates:
+        dependency-type: "production"
+        update-types:
+          - "major"
+    
+    # Rebase stale PRs automatically
+    rebase-strategy: "auto"
+    
+    # Allow up to 10 open pull requests from Dependabot
+    pull-request-branch-name:
+      separator: "/"
+    
+    # Configure commit message
+    commit-message:
+      prefix: "chore(deps):"
+      include: "scope"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    reviewers:
+      - "baej12"
+    commit-message:
+      prefix: "ci:"
+      include: "scope"
