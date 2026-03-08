@@ -8,6 +8,7 @@ interface PdfViewerProps {
 
 export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
     const overlayRef = useRef<HTMLDivElement>(null);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
 
     useEffect(() => {
         // Keep the PDF overlay modal-like so keyboard users can close it reliably.
@@ -20,11 +21,26 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
 
         const handleKey = (e: KeyboardEvent) => {
             if (e.key === 'Escape' || e.key === 'Esc') {
+                e.preventDefault();
+                e.stopPropagation();
                 onClose();
             }
         };
 
+        // Add listener to window and document
         window.addEventListener('keydown', handleKey, true);
+        document.addEventListener('keydown', handleKey, true);
+
+        // Periodically check if focus is lost to iframe and reclaim it
+        const focusCheckInterval = setInterval(() => {
+            const activeElement = document.activeElement;
+            const iframe = iframeRef.current;
+            
+            // If iframe has focus, refocus the overlay so Escape works
+            if (activeElement === iframe) {
+                overlayRef.current?.focus();
+            }
+        }, 100);
 
         return () => {
             try {
@@ -32,6 +48,8 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
                 document.body.style.overflow = '';
             } catch (e) {}
             window.removeEventListener('keydown', handleKey, true);
+            document.removeEventListener('keydown', handleKey, true);
+            clearInterval(focusCheckInterval);
         };
     }, [onClose]);
 
@@ -55,6 +73,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
             </button>
             <div className="pdf-viewer-container" onClick={(e) => e.stopPropagation()}>
                 <iframe
+                    ref={iframeRef}
                     src={url}
                     className="pdf-viewer-frame"
                     title="Resume PDF"
