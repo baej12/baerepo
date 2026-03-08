@@ -46,8 +46,7 @@
 }
 
 .pdf-viewer-close {
-    /* place the close button at the top-right of the viewport for easier access */
-    position: fixed;
+        position: fixed;
     top: 1rem;
     right: 1rem;
     width: 40px;
@@ -55,8 +54,8 @@
     border: none;
     background: rgba(0, 0, 0, 0.7);
     color: white;
-    font-size: 2rem;
-    line-height: 1;
+    font-size: 1.75rem;
+    line-height: 0;
     cursor: pointer;
     border-radius: 50%;
     display: flex;
@@ -66,8 +65,18 @@
     transition: background 0.2s ease;
 }
 
+.pdf-viewer-close span {
+    display: block;
+    transform: translateY(-1px);
+}
+
 .pdf-viewer-close:hover {
     background: rgba(0, 0, 0, 0.9);
+}
+
+.pdf-viewer-close:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 3px;
 }
 
 .pdf-viewer-frame {
@@ -111,3 +120,4 @@ body.pdf-open .edge-particle {
 body.pdf-open .pdf-viewer-close {
     cursor: pointer !important;
 }
+

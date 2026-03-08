@@ -36,7 +36,7 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ jobs }) =>
                 ))}
                 <div className="resume-cta">
                     <button className="resume-link" onClick={() => window.dispatchEvent(new CustomEvent('openResume'))}>
-                        View Full Resume →
+                        View Full Resume <span aria-hidden="true">&rarr;</span>
                     </button>
                 </div>
             </div>

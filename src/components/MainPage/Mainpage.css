@@ -436,7 +436,7 @@ section {
 }
 
 .job-description li::before {
-    content: '▹';
+    content: '\25B9';
     position: absolute;
     left: 0;
     color: var(--color-accent);
@@ -728,3 +728,6 @@ section {
     .sticky-wrapper { position: relative !important; top: unset !important; }
     .right-side { min-height: unset !important; }
 }
+
+
+
