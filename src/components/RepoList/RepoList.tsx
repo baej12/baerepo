@@ -10,7 +10,7 @@ interface Item {
     description: string;
 }
 
-const GITHUB_USERNAME = process.env.REACT_APP_GITHUB_USERNAME || 'baej12';
+const GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME || 'baej12';
 
 export const RepoList = memo((props: IRepoList) => {
     const [repo, setRepo] = useState<Item[]>([]);
