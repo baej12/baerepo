@@ -14,17 +14,14 @@ updates:
     # Group related updates
     groups:
       patch-updates:
-        dependency-type: "patch"
         update-types:
           - "patch"
       
       minor-updates:
-        dependency-type: "minor"
         update-types:
           - "minor"
       
       major-updates:
-        dependency-type: "production"
         update-types:
           - "major"
     
