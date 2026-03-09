@@ -13,10 +13,11 @@ A modern, responsive portfolio website showcasing my professional experience, pr
 
 ## 🛠️ Built With
 
-- **React** 18.2.0 - Modern UI framework
-- **TypeScript** 4.9.5 - Type-safe development
-- **React Router** 6.22.1 - Client-side routing
-- **Axios** 1.7.7 - HTTP requests for GitHub API
+- **React** 19 - Modern UI framework
+- **TypeScript** 5 - Type-safe development
+- **React Router** 7 - Client-side routing
+- **Axios** 1.x - HTTP requests for GitHub API
+- **Vite** 7 - Fast dev/build tooling
 - **CSS3** - Custom styling with smooth animations
 
 ## 📦 Installation
@@ -43,7 +44,7 @@ npm start
 Create a `.env` file in the root directory:
 
 ```env
-REACT_APP_GITHUB_USERNAME=your_github_username
+VITE_GITHUB_USERNAME=your_github_username
 ```
 
 ## 📜 Available Scripts
@@ -52,7 +53,7 @@ REACT_APP_GITHUB_USERNAME=your_github_username
 Runs the app in development mode at [http://localhost:3000](http://localhost:3000)
 
 ### `npm test`
-Launches the test runner in interactive watch mode
+Runs tests with Vitest
 
 ### `npm run build`
 Builds the app for production to the `build` folder
@@ -60,6 +61,34 @@ Builds the app for production to the `build` folder
 ## 🌐 Deployment
 
 The production build is optimized and ready for deployment to any static hosting service.
+
+## 🐳 Container Delivery
+
+GitHub Actions now includes a `containerize` stage in `.github/workflows/build.yml` that builds this app into a Docker image and publishes it to GitHub Container Registry.
+
+- Image name: `ghcr.io/baej12/baerepo`
+- Pushed on branch builds (not pull requests)
+- Includes `latest` tag on the default branch
+
+Run the published image locally:
+
+```bash
+docker pull ghcr.io/baej12/baerepo:latest
+docker run --rm -p 8080:80 ghcr.io/baej12/baerepo:latest
+```
+
+Then open [http://localhost:8080](http://localhost:8080).
+
+## 🔒 CI Security Scans
+
+The CI workflow also runs security checks before container publishing:
+
+- `npm audit --audit-level=high` for dependency vulnerabilities
+- CodeQL static analysis for JavaScript/TypeScript
+- Trivy image scan for OS/library vulnerabilities in the built container
+- Weekly scheduled scan every Monday at 07:00 UTC
+
+Note: scheduled runs execute security checks, but skip image publishing.
 
 ## 👤 Author
 
