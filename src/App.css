@@ -49,6 +49,11 @@
   z-index: 10;
 }
 
+/* The history map page needs full contrast; remove global top/bottom fade mask there. */
+.App.history-route::after {
+  background: none;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

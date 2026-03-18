@@ -8,7 +8,8 @@
       "Continue work done during contract period, focusing on building performant, user-friendly web applications.",
       "Lead effort among variety of teams to update and deploy JTT Core"
     ],
-    "skills": ["Javascript", "React", "Docker", "Cesium", "CI/CD", "Java", "Spring", "Kubernetes"]
+    "skills": ["Javascript", "React", "Docker", "Cesium", "CI/CD", "Java", "Spring", "Kubernetes"],
+    "location": { "city": "Suffolk", "state": "VA", "coordinates": [-76.5836, 36.7282] }
   },
   {
     "id": "insight-global-2024",
@@ -21,7 +22,8 @@
       "Assisted in deployment and testing of project from development to production environment.",
       "Optimized JTT map to allow for significantly increased entity count without sacrificing quality."
     ],
-    "skills": ["Javascript", "React", "Docker", "Cesium", "CI/CD"]
+    "skills": ["Javascript", "React", "Docker", "Cesium", "CI/CD"],
+    "location": { "city": "Suffolk", "state": "VA", "coordinates": [-76.5836, 36.7282] }
   },
   {
     "id": "nsa-2024",
@@ -30,7 +32,8 @@
     "period": "Feb 2024 - Sep 2024",
     "descriptionText": "During this time period, I received a conditional job offer from the National Security Agency. However, due to the lengthy investigation process, I elected to pursue employment elsewhere.",
     "description": [],
-    "skills": []
+    "skills": [],
+    "location": { "city": "Fort Meade", "state": "MD", "coordinates": [-76.7706, 39.1136] }
   },
   {
     "id": "raytheon-2023",
@@ -43,7 +46,8 @@
       "Participated in technical review of various proprietary development applications",
       "Contributed to the development of a model project showcasing departmental best practices for incorporating test executives into software and hardware"
     ],
-    "skills": ["C#", "ATEasy", "Test Stand", "Azure DevOps"]
+    "skills": ["C#", "ATEasy", "Test Stand", "Azure DevOps"],
+    "location": { "city": "Tucson", "state": "AZ", "coordinates": [-110.9747, 32.2226] }
   },
   {
     "id": "unlv-2023",
@@ -54,7 +58,8 @@
       "Ensured equal access to information and functionality across FIA and DATIM websites by addressing accessibility violations defined by WCAG and Section 508",
       "Created contingency website for UNLV FIA, providing the group with a redundant copy of essential information and functions from the primary site"
     ],
-    "skills": ["C#", "JavaScript", "JQuery", "ASP.NET", "HTML", "CSS", "Git"]
+    "skills": ["C#", "JavaScript", "JQuery", "ASP.NET", "HTML", "CSS", "Git"],
+    "location": { "city": "Las Vegas", "state": "NV", "coordinates": [-115.1391, 36.1716] }
   },
   {
     "id": "credit-one-2022",
@@ -65,6 +70,7 @@
       "Developed a React-based web application that would allow any user to calculate the payoff timeline for a user-defined number of loans",
       "Deployed various endpoints for a RESTful API that will be utilized in the company's modernized mobile website"
     ],
-    "skills": ["Java", "TypeScript", "React.js", "Spring", "PostgreSQL", "HTML", "CSS", "Git"]
+    "skills": ["Java", "TypeScript", "React.js", "Spring", "PostgreSQL", "HTML", "CSS", "Git"],
+    "location": { "city": "Las Vegas", "state": "NV", "coordinates": [-115.1391, 36.1716] }
   }
 ]

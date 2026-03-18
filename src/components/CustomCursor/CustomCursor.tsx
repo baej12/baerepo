@@ -13,22 +13,32 @@ export const CustomCursor = () => {
         let mouseY = 0;
         let cursorX = 0;
         let cursorY = 0;
+        const isHistoryRoute = window.location.pathname === '/history';
 
         const handleMouseMove = (e: MouseEvent) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
 
+            const target = e.target as HTMLElement | null;
+            const isOverMap = !!target?.closest('.us-history-map');
+            if (isOverMap) {
+                cursor.classList.add('cursor-hidden');
+                return;
+            }
+
+            cursor.classList.remove('cursor-hidden');
+
             // Check for edge proximity and create particles
             const edgeThreshold = 50;
             const { innerWidth, innerHeight } = window;
             
-            if (mouseX < edgeThreshold || mouseX > innerWidth - edgeThreshold ||
-                mouseY < edgeThreshold || mouseY > innerHeight - edgeThreshold) {
+            if (!isHistoryRoute && (mouseX < edgeThreshold || mouseX > innerWidth - edgeThreshold ||
+                mouseY < edgeThreshold || mouseY > innerHeight - edgeThreshold)) {
                 createEdgeParticles(mouseX, mouseY);
             }
 
             // Create trail effect
-            if (Date.now() - trailTimerRef.current > 50) {
+            if (!isHistoryRoute && Date.now() - trailTimerRef.current > 50) {
                 createTrail(mouseX, mouseY);
                 trailTimerRef.current = Date.now();
             }
@@ -67,6 +77,14 @@ export const CustomCursor = () => {
 
         const handleMouseOver = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
+            if (target.closest('.us-history-map')) {
+                cursor.classList.add('cursor-hidden');
+                cursor.classList.remove('hover');
+                return;
+            }
+
+            cursor.classList.remove('cursor-hidden');
+
             if (target.tagName === 'A' || target.tagName === 'BUTTON' || 
                 target.closest('a') || target.closest('button') ||
                 target.classList.contains('job-item') ||
