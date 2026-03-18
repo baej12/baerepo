@@ -133,10 +133,6 @@
   cursor: grabbing;
 }
 
-.map-ocean {
-  fill: #081225;
-}
-
 .map-country {
   fill: #15284a;
   stroke: rgba(147, 197, 253, 0.22);

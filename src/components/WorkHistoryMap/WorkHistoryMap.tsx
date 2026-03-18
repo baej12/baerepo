@@ -386,8 +386,6 @@ export const WorkHistoryMap = () => {
               </linearGradient>
             </defs>
 
-            <rect className="map-ocean" x="0" y="0" width={VIEWBOX.width} height={VIEWBOX.height} rx="20" />
-
             <g transform={`translate(${viewTransform.x} ${viewTransform.y})`}>
               <g transform={`scale(${viewTransform.zoom})`}>
                 <g className="map-countries">
