@@ -285,6 +285,19 @@ export const WorkHistoryMap = () => {
     [mapPins, projection]
   );
 
+  const jobPinCount = mapPins.filter(pin => pin.kind === 'job').length;
+  const customPinCount = mapPins.length - jobPinCount;
+  const selectedPinLabel = activePin?.title ?? 'None';
+  const selectedPinJobs = activePin?.jobs?.length ?? 0;
+
+  const formatCoordinateLabel = (value: number, positiveHemisphere: string, negativeHemisphere: string) => {
+    const hemisphere = value >= 0 ? positiveHemisphere : negativeHemisphere;
+    return `${Math.abs(value).toFixed(1)}°${hemisphere}`;
+  };
+
+  const sunLongitude = formatCoordinateLabel(solarPoint[0], 'E', 'W');
+  const sunLatitude = formatCoordinateLabel(solarPoint[1], 'N', 'S');
+
   const clampZoom = (value: number) => Math.min(6, Math.max(1, value));
 
   const handleWheelZoom = (event: React.WheelEvent<SVGSVGElement>) => {
@@ -352,7 +365,7 @@ export const WorkHistoryMap = () => {
     <section className="work-history-map-section" id="map">
       <div className="map-header-row">
         <div className="map-heading-group">
-          <h2 className="section-heading">World map</h2>
+          <h2 className="section-heading">World Map</h2>
           <p className="map-subtitle">
             Work locations plus any place I have visited or want to visit
           </p>
@@ -486,13 +499,42 @@ export const WorkHistoryMap = () => {
             </g>
           </svg>
 
-          <div className="map-caption">
-            <span className="map-caption-dot" />
-            <span>Click a marker for details · Add custom pins in mapPlaces.json</span>
-            <span className="map-utc-time">
-              {currentTime.getUTCHours().toString().padStart(2, '0')}
-              :{currentTime.getUTCMinutes().toString().padStart(2, '0')} UTC · {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} local
-            </span>
+          <div className="map-footer">
+            <div className="map-caption">
+              <span className="map-caption-dot" />
+              <span>Click a marker for details · Add custom pins in mapPlaces.json</span>
+              <span className="map-utc-time">
+                {currentTime.getUTCHours().toString().padStart(2, '0')}
+                :{currentTime.getUTCMinutes().toString().padStart(2, '0')} UTC · {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} local
+              </span>
+            </div>
+
+            <div className="map-meta-row" aria-label="Map status details">
+              <span className="map-meta-pill">
+                <span className="map-meta-label">Zoom</span>
+                <strong>{viewTransform.zoom.toFixed(2)}x</strong>
+              </span>
+              <span className="map-meta-pill">
+                <span className="map-meta-label">Markers</span>
+                <strong>{mapPins.length}</strong>
+              </span>
+              <span className="map-meta-pill">
+                <span className="map-meta-label">Work</span>
+                <strong>{jobPinCount}</strong>
+              </span>
+              <span className="map-meta-pill">
+                <span className="map-meta-label">Other</span>
+                <strong>{customPinCount}</strong>
+              </span>
+              <span className="map-meta-pill map-meta-pill--wide">
+                <span className="map-meta-label">Selected</span>
+                <strong>{selectedPinLabel}{selectedPinJobs > 1 ? ` (${selectedPinJobs} jobs)` : ''}</strong>
+              </span>
+              <span className="map-meta-pill map-meta-pill--wide">
+                <span className="map-meta-label">Sun position</span>
+                <strong>{sunLatitude} · {sunLongitude}</strong>
+              </span>
+            </div>
           </div>
         </div>
 
