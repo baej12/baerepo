@@ -6,6 +6,11 @@ export interface Job {
   descriptionText?: string;
   description: string[];
   skills: string[];
+  location?: {
+    city: string;
+    state: string;
+    coordinates: [number, number];
+  };
 }
 
 export interface Project {

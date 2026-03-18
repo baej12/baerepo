@@ -4,6 +4,7 @@ import { AboutSection } from '../AboutSection/AboutSection';
 import { ExperienceSection } from '../ExperienceSection/ExperienceSection';
 import { ProjectsSection } from '../ProjectsSection/ProjectsSection';
 import React, { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Job, Project, AboutContent, Profile } from '../../types/content';
 import jobsData from '../../data/jobs.json';
 import projectsData from '../../data/projects.json';
@@ -19,10 +20,10 @@ const Mainpage: React.FC = () => {
     const [sections, setSections] = useState<{ id: string; label: string }[]>([]);
     const [showPdfViewer, setShowPdfViewer] = useState<boolean>(false);
     
-    const jobs: Job[] = jobsData;
-    const projects: Project[] = projectsData;
-    const about: AboutContent = aboutData;
-    const profile: Profile = profileData;
+    const jobs = jobsData as Job[];
+    const projects = projectsData as Project[];
+    const about = aboutData as AboutContent;
+    const profile = profileData as Profile;
 
     // Listen for custom event to open resume
     useEffect(() => {
@@ -362,6 +363,13 @@ const Mainpage: React.FC = () => {
                             )}
                         </ul>
                 </nav>
+
+                <div className="route-links" aria-label="Other pages">
+                    <Link className="route-link history-route-link" to="/history">
+                        <span>Open history page</span>
+                        <span className="route-link-icon" aria-hidden="true">↗</span>
+                    </Link>
+                </div>
 
                 {/* <span style ={{position: "sticky", marginTop: "50vh"}}>
                     <a href="https://www.linkedin.com/in/jhbbae/">

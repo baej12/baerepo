@@ -30,6 +30,15 @@
   z-index: 0;
 }
 
+.App.history-route {
+  background: linear-gradient(180deg, #0f172a 0%, #0f172a 100%);
+}
+
+.App.history-route::before,
+.App.history-route::after {
+  display: none;
+}
+
 /* Fade mask at top and bottom edges */
 .App::after {
   content: '';

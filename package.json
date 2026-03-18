@@ -11,11 +11,15 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "axios": "^1.13.6",
+    "d3-geo": "^3.1.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.1",
+    "topojson-client": "^3.1.0",
     "typescript": "^5.9.3",
-    "web-vitals": "^5.1.0"
+    "us-atlas": "^3.0.1",
+    "web-vitals": "^5.1.0",
+    "world-atlas": "^2.0.2"
   },
   "scripts": {
     "start": "vite",
@@ -44,8 +48,9 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/d3-geo": "^3.1.0",
+    "@types/topojson-client": "^3.1.5",
     "@vitejs/plugin-react": "^6.0.1",
-    "vite": "^8.0.0",
-    "vite-tsconfig-paths": "^6.1.1"
+    "vite": "^8.0.0"
   }
 }

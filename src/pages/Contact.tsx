@@ -5,7 +5,7 @@ import { NavBar } from "../components/NavBar/NavBar"
 
 export const Contact = () => {
     return <div className="App">
-        <NavBar items={["Home", "About", "Services", "Contact"]} />
+        <NavBar items={["Home", "About", "Services", "History", "Contact"]} />
         <ContactPage />
         <Attributions />
     </div>

@@ -18,6 +18,15 @@ export const CustomCursor = () => {
             mouseX = e.clientX;
             mouseY = e.clientY;
 
+            const target = e.target as HTMLElement | null;
+            const isOverMap = !!target?.closest('.us-history-map');
+            if (isOverMap) {
+                cursor.classList.add('cursor-hidden');
+                return;
+            }
+
+            cursor.classList.remove('cursor-hidden');
+
             // Check for edge proximity and create particles
             const edgeThreshold = 50;
             const { innerWidth, innerHeight } = window;
@@ -67,6 +76,14 @@ export const CustomCursor = () => {
 
         const handleMouseOver = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
+            if (target.closest('.us-history-map')) {
+                cursor.classList.add('cursor-hidden');
+                cursor.classList.remove('hover');
+                return;
+            }
+
+            cursor.classList.remove('cursor-hidden');
+
             if (target.tagName === 'A' || target.tagName === 'BUTTON' || 
                 target.closest('a') || target.closest('button') ||
                 target.classList.contains('job-item') ||

@@ -2,31 +2,51 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
 .NavBar-Parent {
-  margin: 2rem auto 0 auto;
-  border-radius: 1rem;
-  background-color: white;
-  border: 0.15rem solid rgba(128,128,128,0.6);
-  display:flex;
+  margin: 1.4rem auto 0 auto;
+  border-radius: 999px;
+  background:
+    linear-gradient(120deg, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.65)),
+    radial-gradient(circle at top, rgba(59, 130, 246, 0.18), transparent 55%);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow:
+    0 16px 36px rgba(2, 6, 23, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   align-content: center;
-  height: 4rem;
+  min-height: 4rem;
   width: 90%;
   max-width: 1100px;
-  padding: 0 1rem;
+  padding: 0.45rem 1rem;
 }
 
 .NavBar-Logo {
-  max-width: 4rem;
-  max-height: 2rem;
-  margin-top:0.3rem;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.NavBar-LogoButton {
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(139, 92, 246, 0.14));
+  width: 2.95rem;
+  height: 2.95rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
 }
 
 .NavBar-Items {
   font-family: 'Roboto', monospace;
-  font-size: 1.1rem;
-  color: black;
+  font-size: 0.95rem;
+  color: #e2e8f0;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -34,21 +54,32 @@
   align-items: center;
   align-content: center;
   width: 100%;
-  margin-left:1rem;
-}
-
-.NavBar-Items-Item:hover {
-  text-decoration: underline;
+  margin-left: 0.8rem;
+  gap: 0.35rem;
 }
 
 .NavBar-Items-Item {
-  margin-left: 1rem;
-  margin-right: 1rem;
+  margin: 0;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  color: rgba(226, 232, 240, 0.86);
   text-decoration: none;
+  transition: all 180ms ease;
 }
 
 .NavBar-Items-Item:hover {
   cursor: pointer;
+  color: #f8fafc;
+  border-color: rgba(96, 165, 250, 0.35);
+  background: rgba(59, 130, 246, 0.14);
+}
+
+.NavBar-Items-Item.is-active {
+  color: #f8fafc;
+  border-color: rgba(96, 165, 250, 0.45);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(139, 92, 246, 0.2));
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.22);
 }
 
 .unselectable {
@@ -59,9 +90,14 @@
 @media (max-width: 768px) {
   .NavBar-Parent {
     height: auto;
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 0.7rem;
   }
-  .NavBar-Logo { max-width: 3rem; max-height: 2rem; }
-  .NavBar-Items { font-size: 1rem; justify-content: flex-end; gap: 0.5rem; }
-  .NavBar-Items-Item { margin: 0.25rem 0.5rem; }
+  .NavBar-Items {
+    font-size: 0.88rem;
+    justify-content: flex-end;
+    gap: 0.35rem;
+  }
+  .NavBar-Items-Item {
+    padding: 0.42rem 0.65rem;
+  }
 }

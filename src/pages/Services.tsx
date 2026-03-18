@@ -5,7 +5,7 @@ import { ServicesPage } from "../components/ServicesPage/ServicesPage"
 
 export const Services = () => {
     return <div className='App'>
-        <NavBar items={["Home", "About", "Services", "Contact"]} />
+        <NavBar items={["Home", "About", "Services", "History", "Contact"]} />
         <ServicesPage/>
         <Attributions />
     </div>
