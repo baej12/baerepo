@@ -1,13 +1,14 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import Mainpage from "./components/MainPage/Mainpage";
 import { CustomCursor } from "./components/CustomCursor/CustomCursor";
 import { SeasonalBackdrop } from "./components/SeasonalBackdrop/SeasonalBackdrop";
-import { About } from "./pages/About";
-import { Services } from "./pages/Services";
-import { Contact } from "./pages/Contact";
-import { History } from "./pages/History";
+
+const Mainpage = lazy(() => import("./components/MainPage/Mainpage"));
+const About = lazy(() => import("./pages/About").then(module => ({ default: module.About })));
+const Services = lazy(() => import("./pages/Services").then(module => ({ default: module.Services })));
+const Contact = lazy(() => import("./pages/Contact").then(module => ({ default: module.Contact })));
+const History = lazy(() => import("./pages/History").then(module => ({ default: module.History })));
 
 const EXIT_TRANSITION_MS = 160;
 const ENTER_TRANSITION_MS = 260;
@@ -90,13 +91,15 @@ function AppRoutes() {
         className={`App-route-shell${transitionStage !== "idle" ? ` is-${transitionStage}` : ""}`}
         aria-live="polite"
       >
-        <Routes location={displayLocation}>
-          <Route path="/" element={<Mainpage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
+        <Suspense fallback={null}>
+          <Routes location={displayLocation}>
+            <Route path="/" element={<Mainpage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/history" element={<History />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+        </Suspense>
       </div>
     </main>
   );
