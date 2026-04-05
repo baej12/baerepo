@@ -51,7 +51,7 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
-.project-card:hover { cursor: pointer; }
+.project-card:hover { cursor: none !important; }
 
 .project-card:hover::before {
     opacity: 1;
@@ -76,6 +76,46 @@
     color: var(--color-text-secondary, #e2e2e2);
     margin: 0;
     text-align: left;
+}
+
+.repo-commits {
+    margin-top: 0.25rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.repo-commits-title {
+    margin: 0 0 0.55rem 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--color-text-primary, #ffffff);
+}
+
+.repo-commits-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.repo-commit-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.repo-commit-message {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary, #e2e2e2);
+    line-height: 1.35;
+}
+
+.repo-commit-meta {
+    font-size: 0.78rem;
+    color: rgba(226, 226, 226, 0.72);
 }
 
 .project-link {
