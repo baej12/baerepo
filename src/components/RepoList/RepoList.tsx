@@ -1,4 +1,4 @@
-import { memo } from "react";
+﻿import { memo } from "react";
 import './RepoList.css'
 import { IRepoList } from "../Interfaces/IRepoList";
 import generatedRepoStats from "../../data/repoStats.generated";
