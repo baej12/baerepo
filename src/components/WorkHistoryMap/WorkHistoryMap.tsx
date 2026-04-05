@@ -4,18 +4,10 @@ import { feature, mesh } from 'topojson-client';
 import { Link } from 'react-router-dom';
 import worldAtlas from 'world-atlas/countries-110m.json';
 import usStatesTopology from 'us-atlas/states-10m.json';
-import jobsData from '../../data/jobs.json';
-import mapPlacesData from '../../data/mapPlaces.json';
+import jobsData from '../../data/jobs';
+import mapPlacesData, { CustomPlace } from '../../data/mapPlaces';
 import { Job } from '../../types/content';
 import './WorkHistoryMap.css';
-
-interface CustomPlace {
-  id: string;
-  name: string;
-  coordinates: [number, number];
-  category?: 'visited' | 'interesting' | 'custom';
-  note?: string;
-}
 
 interface MapPin {
   id: string;
@@ -191,8 +183,8 @@ export const WorkHistoryMap = () => {
   }, []);
 
   const mapPins = useMemo(() => {
-    const jobPins = buildJobPins(jobsData as Job[]);
-    const customPins = buildCustomPins(mapPlacesData as CustomPlace[]);
+    const jobPins = buildJobPins(jobsData);
+    const customPins = buildCustomPins(mapPlacesData);
     return [...jobPins, ...customPins];
   }, []);
 
@@ -586,7 +578,7 @@ export const WorkHistoryMap = () => {
                     <div className="popup-job">
                       <p className="popup-company">{activePin.kind.toUpperCase()} pin</p>
                       <p className="popup-desc-text">
-                        {activePin.note || 'Add note text in src/data/mapPlaces.json to describe this place.'}
+                        {activePin.note || 'Add note text in src/data/mapPlaces.ts to describe this place.'}
                       </p>
                     </div>
                   </div>
@@ -595,7 +587,7 @@ export const WorkHistoryMap = () => {
             ) : (
               <div className="history-details-empty">
                 <h3>Select a marker</h3>
-                <p>Click any marker to view details. You can add custom pins in src/data/mapPlaces.json.</p>
+                <p>Click any marker to view details. You can add custom pins in src/data/mapPlaces.ts.</p>
               </div>
             )}
           </aside>

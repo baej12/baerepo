@@ -6,10 +6,10 @@ import { ProjectsSection } from '../ProjectsSection/ProjectsSection';
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Job, Project, AboutContent, Profile } from '../../types/content';
-import jobsData from '../../data/jobs.json';
-import projectsData from '../../data/projects.json';
-import aboutData from '../../data/about.json';
-import profileData from '../../data/profile.json';
+import jobsData from '../../data/jobs';
+import projectsData from '../../data/projects';
+import aboutData from '../../data/about';
+import profileData from '../../data/profile';
 
 const Mainpage: React.FC = () => {
     const [activeSection, setActiveSection] = useState<string>('about');
@@ -20,10 +20,10 @@ const Mainpage: React.FC = () => {
     const [sections, setSections] = useState<{ id: string; label: string }[]>([]);
     const [showPdfViewer, setShowPdfViewer] = useState<boolean>(false);
     
-    const jobs = jobsData as Job[];
-    const projects = projectsData as Project[];
-    const about = aboutData as AboutContent;
-    const profile = profileData as Profile;
+    const jobs: Job[] = jobsData;
+    const projects: Project[] = projectsData;
+    const about: AboutContent = aboutData;
+    const profile: Profile = profileData;
 
     // Listen for custom event to open resume
     useEffect(() => {
