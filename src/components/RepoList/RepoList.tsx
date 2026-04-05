@@ -1,133 +1,50 @@
-import axios from "axios";
-import { useEffect, useState, memo } from "react";
+import { memo } from "react";
 import './RepoList.css'
 import { IRepoList } from "../Interfaces/IRepoList";
-
-interface Item {
-    name: string;
-    html_url: string;
-    language: string | null;
-    description: string | null;
-    languages_url?: string;
-    default_branch?: string;
-    updated_at?: string;
-}
-
-interface CommitItem {
-    sha: string;
-    commit: {
-        message: string;
-        author: {
-            date: string;
-        };
-    };
-}
-
-interface RepoMeta {
-    languages: string[];
-    recentCommits: Array<{ sha: string; message: string; date: string }>;
-}
-
-const GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME || 'baej12';
-const MAX_LANGUAGES = 4;
-const MAX_RECENT_COMMITS = 3;
+import generatedRepoStats from "../../data/repoStats.generated";
 
 export const RepoList = memo((props: IRepoList) => {
-    const [repo, setRepo] = useState<Item[]>([]);
-    const [repoMeta, setRepoMeta] = useState<Record<string, RepoMeta>>({});
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const latestGeneratedUpdate = generatedRepoStats.reduce<Date | null>((latest, repo) => {
+        if (!repo.updatedAt) return latest;
+        const parsed = new Date(repo.updatedAt);
+        if (Number.isNaN(parsed.getTime())) return latest;
+        if (!latest || parsed > latest) return parsed;
+        return latest;
+    }, null);
 
-    useEffect(() => {
-        // Fetch repos then enrich each card with language breakdown and recent commits.
-        axios.get<Item[]>(`https://api.github.com/users/${GITHUB_USERNAME}/repos`, {
-            params: {
-                sort: 'updated',
-                direction: 'desc',
-                per_page: 100,
-            },
+    const localLastUpdated = latestGeneratedUpdate
+        ? latestGeneratedUpdate.toLocaleString([], {
+            year: 'numeric',
+            month: 'short',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
         })
-            .then(async response => {
-                const repos = [...response.data].sort((a, b) => {
-                    const aUpdated = a.updated_at ? Date.parse(a.updated_at) : 0;
-                    const bUpdated = b.updated_at ? Date.parse(b.updated_at) : 0;
-                    return bUpdated - aUpdated;
-                });
-                setRepo(repos);
+        : null;
 
-                const metadataEntries = await Promise.all(
-                    repos.map(async (repository) => {
-                        try {
-                            const [languagesResponse, commitsResponse] = await Promise.all([
-                                repository.languages_url
-                                    ? axios.get<Record<string, number>>(repository.languages_url)
-                                    : Promise.resolve({ data: {} as Record<string, number> }),
-                                axios.get<CommitItem[]>(
-                                    `https://api.github.com/repos/${GITHUB_USERNAME}/${repository.name}/commits`,
-                                    {
-                                        params: {
-                                            sha: repository.default_branch ?? 'main',
-                                            per_page: MAX_RECENT_COMMITS,
-                                        },
-                                    }
-                                ),
-                            ]);
-
-                            const languages = Object.entries(languagesResponse.data)
-                                .sort((a, b) => b[1] - a[1])
-                                .map(([name]) => name)
-                                .slice(0, MAX_LANGUAGES);
-
-                            const recentCommits = commitsResponse.data.map((commit) => ({
-                                sha: commit.sha.slice(0, 7),
-                                message: commit.commit.message.split('\n')[0],
-                                date: new Date(commit.commit.author.date).toLocaleDateString(),
-                            }));
-
-                            return [repository.name, { languages, recentCommits }] as const;
-                        } catch (metaError) {
-                            console.warn(`Unable to fetch metadata for repo: ${repository.name}`, metaError);
-                            return [repository.name, { languages: [], recentCommits: [] }] as const;
-                        }
-                    })
-                );
-
-                setRepoMeta(Object.fromEntries(metadataEntries));
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                setError('Failed to load GitHub repositories. Please try again later.');
-                setLoading(false);
-            });
-    }, [])
-
+    const utcLastUpdated = latestGeneratedUpdate
+        ? `${latestGeneratedUpdate.toISOString().slice(0, 16).replace('T', ' ')} UTC`
+        : null;
 
     return <div className="project-item">
-        {loading ? (
-            <div className="loading-skeleton">
-                <div className="skeleton-item"></div>
-                <div className="skeleton-item"></div>
-                <div className="skeleton-item"></div>
+        {latestGeneratedUpdate && (
+            <div className="repo-stats-updated" aria-label="Repository stats freshness">
+                Repo stats last refreshed: {localLastUpdated} ({utcLastUpdated})
             </div>
-        ) : error ? (
-            <p className="error-message">{error}</p>
-        ) : (
-            repo.map((item, index) => (
-            (() => {
-                const metadata = repoMeta[item.name];
-                const languages = metadata?.languages?.length
-                    ? metadata.languages
-                    : item.language
-                        ? [item.language]
-                        : [];
-                const commits = metadata?.recentCommits ?? [];
+        )}
+        {generatedRepoStats.map((item, index) => {
+            const languages = item.languages?.length
+                ? item.languages
+                : item.primaryLanguage
+                    ? [item.primaryLanguage]
+                    : [];
+            const commits = item.recentCommits ?? [];
 
-                return (
+            return (
             <a
                 key={index}
                 className="project-card"
-                href={item.html_url}
+                href={item.htmlUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Open ${item.name} on GitHub`}
@@ -152,16 +69,17 @@ export const RepoList = memo((props: IRepoList) => {
                                 <li key={`${item.name}-${commit.sha}`} className="repo-commit-item">
                                     <span className="repo-commit-message">{commit.message}</span>
                                     <span className="repo-commit-meta">{commit.sha} · {commit.date}</span>
+                                    <span className="repo-commit-meta">
+                                        +{commit.additions} / -{commit.deletions} · {commit.changedFiles} files changed
+                                    </span>
                                 </li>
                             ))}
                         </ul>
                     </div>
                 )}
             </a>
-                );
-            })()
-            ))
-        )}
+            );
+        })}
         {props?.items?.map((item, index)  => (
             item.link ? (
                 <a
