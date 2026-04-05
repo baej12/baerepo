@@ -1,101 +1,96 @@
-# Brandon Bae - Portfolio Website
+# Brandon Bae Portfolio
 
-A modern, responsive portfolio website showcasing my professional experience, projects, and technical skills as a Software Engineer.
+A responsive React + TypeScript portfolio site with route-based pages, animated transitions, a world work-history map, and a live GitHub repository feed.
 
-## 🚀 Features
+## Features
 
-- **Professional Experience Timeline** - Detailed work history at Huntington Ingalls Industries, Raytheon, Credit One Bank, and more
-- **Dynamic Project Showcase** - Automatically fetches and displays GitHub repositories
-- **Smooth Navigation** - Anchor-based scrolling between sections
-- **Responsive Design** - Optimized for desktop and mobile viewing
-- **Accessibility** - Built with semantic HTML and ARIA labels
-- **SEO Optimized** - Comprehensive meta tags and Open Graph support
+- Route-based experience with pages for Home, About, Services, Contact, and History
+- Animated route transitions between the Home and History experiences
+- Work history map with zoom/pan interactions and marker detail panels
+- GitHub repository feed powered by the public GitHub API
+- Curated profile/about/jobs/projects content stored as typed TypeScript data modules
+- Responsive layout with accessibility-minded markup and labels
 
-## 🛠️ Built With
+## Tech Stack
 
-- **React** 19 - Modern UI framework
-- **TypeScript** 5 - Type-safe development
-- **React Router** 7 - Client-side routing
-- **Axios** 1.x - HTTP requests for GitHub API
-- **Vite** 7 - Fast dev/build tooling
-- **CSS3** - Custom styling with smooth animations
+- React 19
+- TypeScript 6
+- React Router 7
+- Vite 8
+- Axios
+- D3 Geo + TopoJSON (map rendering)
 
-## 📦 Installation
+## Getting Started
 
 ```bash
-# Clone the repository
 git clone https://github.com/baej12/baerepo.git
-
-# Navigate to project directory
 cd baerepo
-
-# Install dependencies
 npm install
-
-# Create environment file
-cp .env.example .env
-
-# Start development server
-npm start
+npm run dev
 ```
 
-## 🔧 Configuration
+Default local URL: [http://localhost:3000](http://localhost:3000)
 
-Create a `.env` file in the root directory:
+## Environment Variables
+
+Copy or create a local environment file and set:
 
 ```env
 VITE_GITHUB_USERNAME=your_github_username
 ```
 
-## 📜 Available Scripts
+If not set, the app falls back to `baej12`.
 
-### `npm start`
-Runs the app in development mode at [http://localhost:3000](http://localhost:3000)
+The example file is available at `.env.example`.
 
-### `npm test`
-Runs tests with Vitest
+## Data Sources
 
-### `npm run build`
-Builds the app for production to the `build` folder
+Portfolio content is stored in TypeScript modules under `src/data/`:
 
-## 🌐 Deployment
+- `about.ts`
+- `jobs.ts`
+- `projects.ts`
+- `profile.ts`
+- `mapPlaces.ts`
 
-The production build is optimized and ready for deployment to any static hosting service.
+To add custom non-job map pins, edit `src/data/mapPlaces.ts`.
 
-## 🐳 Container Delivery
+## Scripts
 
-GitHub Actions now includes a `containerize` stage in `.github/workflows/build.yml` that builds this app into a Docker image and publishes it to GitHub Container Registry.
+- `npm run dev` or `npm start`: Start the Vite dev server
+- `npm run build`: Type-check with TypeScript and create production build in `build/`
+- `npm run preview`: Preview the production build locally
+- `npm test`: Run tests with Vitest
 
-- Image name: `ghcr.io/baej12/baerepo`
-- Pushed on branch builds (not pull requests)
-- Includes `latest` tag on the default branch
+## Build and Deployment
 
-Run the published image locally:
+The project builds static assets into `build/` and can be deployed to any static host that supports SPA fallback routing.
+
+A Dockerfile is included for containerized deployment with Nginx:
 
 ```bash
-docker pull ghcr.io/baej12/baerepo:latest
-docker run --rm -p 8080:80 ghcr.io/baej12/baerepo:latest
+docker build -t baerepo:local .
+docker run --rm -p 8080:80 baerepo:local
 ```
 
 Then open [http://localhost:8080](http://localhost:8080).
 
-## 🔒 CI Security Scans
+## CI
 
-The CI workflow also runs security checks before container publishing:
+The workflow in `.github/workflows/build.yml` currently runs:
 
-- `npm audit --audit-level=high` for dependency vulnerabilities
-- CodeQL static analysis for JavaScript/TypeScript
-- Trivy image scan for OS/library vulnerabilities in the built container
-- Weekly scheduled scan every Monday at 07:00 UTC
+- Install dependencies (`npm ci`)
+- Type check (`npx tsc --noEmit`)
+- Production build (`npm run build`)
+- Dependency audit (`npm audit --audit-level=high`)
 
-Note: scheduled runs execute security checks, but skip image publishing.
+## Author
 
-## 👤 Author
+Jung Hwan (Brandon) Bae
 
-**Jung Hwan (Brandon) Bae**
 - GitHub: [@baej12](https://github.com/baej12)
 - LinkedIn: [Jung Hwan Bae](https://www.linkedin.com/in/jhbbae/)
 
-## 📄 License
+## License
 
-This project is open source and available for personal and educational use.
+Open source for personal and educational use.
