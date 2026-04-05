@@ -141,7 +141,7 @@ const writeGeneratedFile = async (repoSummaries) => {
 };
 
 const main = async () => {
-  console.log(`Fetching repositories for ${GITHUB_USERNAME}...`);
+  console.log('Fetching repositories from GitHub...');
 
   const repos = await githubApiGet(`/users/${GITHUB_USERNAME}/repos`, {
     sort: 'updated',
