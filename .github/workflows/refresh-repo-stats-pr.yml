@@ -1,0 +1,67 @@
+name: Refresh Repo Stats PR
+
+on:
+  schedule:
+    - cron: '17 7 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: repo-stats-refresh-pr
+  cancel-in-progress: true
+
+jobs:
+  refresh-repo-stats:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Detect generate script
+        id: detect-script
+        run: |
+          HAS_SCRIPT=$(node -e "const p=require('./package.json'); process.stdout.write(p.scripts && p.scripts['generate:repo-stats'] ? 'true' : 'false')")
+          echo "has_script=$HAS_SCRIPT" >> "$GITHUB_OUTPUT"
+
+      - name: Generate repo stats
+        if: steps.detect-script.outputs.has_script == 'true'
+        run: npm run generate:repo-stats
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ vars.GITHUB_USERNAME }}
+
+      - name: Create or update PR
+        if: steps.detect-script.outputs.has_script == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/daily-repo-stats
+          delete-branch: false
+          commit-message: "chore: refresh generated repo stats"
+          title: "chore: refresh generated repo stats"
+          body: |
+            Automated daily refresh of generated repo stats.
+
+            This workflow reuses a fixed branch so existing PRs are updated instead of creating duplicates.
+          labels: |
+            automation
+            data-refresh
+
+      - name: Script missing notice
+        if: steps.detect-script.outputs.has_script != 'true'
+        run: |
+          echo "No 'generate:repo-stats' script found in package.json."
+          echo "Add it to enable automated daily refresh PRs."

@@ -27,7 +27,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "generate:repo-stats": "node scripts/generate-repo-stats.mjs"
   },
   "eslintConfig": {
     "extends": [
