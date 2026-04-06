@@ -16,6 +16,9 @@ concurrency:
 jobs:
   refresh-repo-stats:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -47,7 +50,7 @@ jobs:
         if: steps.detect-script.outputs.has_script == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.REPO_STATS_TOKEN || secrets.GITHUB_TOKEN }}
           branch: automation/daily-repo-stats
           delete-branch: false
           commit-message: "chore: refresh generated repo stats"
