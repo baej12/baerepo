@@ -27,38 +27,38 @@ export const generatedRepoStats: GeneratedRepoStats[] = [
     "htmlUrl": "https://github.com/baej12/baerepo",
     "description": "This is the repository that hosts my website! ",
     "defaultBranch": "master",
-    "updatedAt": "2026-04-05T14:41:44Z",
+    "updatedAt": "2026-04-11T15:08:05Z",
     "primaryLanguage": "TypeScript",
     "languages": [
       "TypeScript",
       "CSS",
-      "HTML",
-      "Dockerfile"
+      "JavaScript",
+      "HTML"
     ],
     "recentCommits": [
       {
-        "sha": "aa05f57",
-        "message": "Merge pull request #37 from baej12/feature/repos-recent-commits",
-        "date": "2026-04-05",
-        "additions": 148,
-        "deletions": 9,
-        "changedFiles": 2
-      },
-      {
-        "sha": "24f7ad5",
-        "message": "Enhance repo cards with metadata and cursor fix",
-        "date": "2026-04-05",
-        "additions": 148,
-        "deletions": 9,
-        "changedFiles": 2
-      },
-      {
-        "sha": "ff17c08",
-        "message": "Merge pull request #36 from baej12/update-readme-4-5-2026",
-        "date": "2026-04-05",
-        "additions": 53,
-        "deletions": 58,
+        "sha": "09313ce",
+        "message": "Merge pull request #48 from baej12/fix/refresh-repo-stats-pr-permissions",
+        "date": "2026-04-11",
+        "additions": 10,
+        "deletions": 1,
         "changedFiles": 1
+      },
+      {
+        "sha": "763a536",
+        "message": "fix(ci): require PAT for repo-stats PR workflow",
+        "date": "2026-04-11",
+        "additions": 10,
+        "deletions": 1,
+        "changedFiles": 1
+      },
+      {
+        "sha": "b6460ec",
+        "message": "Merge pull request #47 from baej12/dependabot/npm_and_yarn/axios-1.15.0",
+        "date": "2026-04-11",
+        "additions": 5,
+        "deletions": 5,
+        "changedFiles": 2
       }
     ]
   },
