@@ -9,6 +9,7 @@ interface PdfViewerProps {
 export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
     const overlayRef = useRef<HTMLDivElement>(null);
     const iframeRef = useRef<HTMLIFrameElement>(null);
+    const viewerUrl = url.includes('#') ? url : `${url}#view=FitH&zoom=page-width`;
 
     useEffect(() => {
         // Keep the PDF overlay modal-like so keyboard users can close it reliably.
@@ -81,7 +82,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
             <div className="pdf-viewer-container" onClick={(e) => e.stopPropagation()}>
                 <iframe
                     ref={iframeRef}
-                    src={url}
+                    src={viewerUrl}
                     className="pdf-viewer-frame"
                     title="Resume PDF"
                 />

@@ -575,10 +575,18 @@
 @media (max-width: 768px) {
   .work-history-map-section {
     --map-panel-height: min(68vh, 620px);
+    flex: none;
     width: 100%;
     margin-top: 0;
     padding: 0;
     border-radius: 0;
+    overflow: visible;
+  }
+
+  .history-map-layout,
+  .history-right-column {
+    min-height: 0;
+    height: auto;
   }
 
   .work-history-map-section .section-heading {
@@ -593,6 +601,15 @@
 
   .map-container {
     gap: 0.55rem;
+    flex: none;
+    min-height: var(--map-panel-height);
+  }
+
+  .history-details-panel {
+    flex: none;
+    min-height: 14rem;
+    max-height: none;
+    overflow: visible;
   }
 
   .map-controls {
