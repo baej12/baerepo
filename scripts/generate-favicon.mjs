@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';
-import pngToIco from 'png-to-ico';
+import toIco from 'to-ico';
 
 const root = process.cwd();
 const publicDir = path.join(root, 'public');
@@ -29,14 +29,20 @@ const run = async () => {
     await outPng(192, 'android-chrome-192x192.png');
     await outPng(512, 'android-chrome-512x512.png');
 
-    // Generate ICO from 16/32/48 PNGs
+    // Generate ICO from 16/32/48 PNGs using buffers
     const icoPngs = [
       path.join(publicDir, 'favicon-16x16.png'),
       path.join(publicDir, 'favicon-32x32.png'),
       path.join(publicDir, 'favicon-48x48.png'),
     ];
 
-    const buf = await pngToIco(icoPngs);
+    // Ensure files exist and read as buffers
+    const buffers = icoPngs.map(p => {
+      if (!fs.existsSync(p)) throw new Error(`Expected generated PNG not found: ${p}`);
+      return fs.readFileSync(p);
+    });
+
+    const buf = await toIco(buffers);
     fs.writeFileSync(path.join(publicDir, 'favicon.ico'), buf);
     console.log('Wrote', path.join(publicDir, 'favicon.ico'));
     console.log('All icons generated successfully.');
