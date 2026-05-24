@@ -17,10 +17,7 @@ const shouldAnimateRouteChange = (fromPath: string, toPath: string) => {
     return false;
   }
 
-  return (
-    (fromPath === "/" && toPath === "/history") ||
-    (fromPath === "/history" && toPath === "/")
-  );
+  return false;
 };
 
 const prefersReducedMotion = () =>
