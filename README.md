@@ -1,12 +1,13 @@
 # Brandon Bae Portfolio
 
-A responsive React + TypeScript portfolio site with route-based pages, animated transitions, a world work-history map, and a live GitHub repository feed.
+A responsive React + TypeScript portfolio site with route-based pages, mobile-friendly resume viewing, animated transitions, a world work-history map, and a live GitHub repository feed.
 
 ## Features
 
 - Route-based experience with pages for Home, About, Services, Contact, and History
 - Animated route transitions between the Home and History experiences
 - Work history map with zoom/pan interactions and marker detail panels
+- Protected resume access using Cloudflare Turnstile and an Azure-backed resume URL endpoint
 - GitHub repository feed powered by the public GitHub API
 - Curated profile/about/jobs/projects content stored as typed TypeScript data modules
 - Responsive layout with accessibility-minded markup and labels
@@ -19,6 +20,8 @@ A responsive React + TypeScript portfolio site with route-based pages, animated 
 - Vite 8
 - Axios
 - D3 Geo + TopoJSON (map rendering)
+- Cloudflare Turnstile
+- Azure Functions / Azure Blob Storage for protected resume delivery
 
 ## Getting Started
 
@@ -43,12 +46,13 @@ VITE_TURNSTILE_SITE_KEY=your_turnstile_site_key
 If not set, the app falls back to `baej12`.
 
 `VITE_TURNSTILE_SITE_KEY` enables the CAPTCHA challenge before the resume URL is requested.
+The resume endpoint is configured in `src/data/profile.ts` and returns the current Azure-hosted resume URL after CAPTCHA verification.
 
 The example file is available at `.env.example`.
 
 ## Data Sources
 
-Portfolio content is stored in TypeScript modules under `src/data/`:
+Portfolio content is stored in TypeScript modules under `src/data/`. These modules are the source of truth; stale JSON mirrors are intentionally not kept in the repository.
 
 - `about.ts`
 - `jobs.ts`
