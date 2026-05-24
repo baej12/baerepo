@@ -727,6 +727,19 @@ section {
     cursor: not-allowed;
 }
 
+body.resume-captcha-open,
+body.resume-captcha-open .App,
+body.resume-captcha-open .mainpage,
+body.resume-captcha-open button {
+    cursor: auto !important;
+}
+
+body.resume-captcha-open .custom-cursor,
+body.resume-captcha-open .cursor-trail,
+body.resume-captcha-open .edge-particle {
+    display: none !important;
+}
+
 /* Navigation Styles */
 .nav-items {
     margin-top: var(--spacing-2xl);
