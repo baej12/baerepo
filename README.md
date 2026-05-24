@@ -37,9 +37,12 @@ Copy or create a local environment file and set:
 
 ```env
 VITE_GITHUB_USERNAME=your_github_username
+VITE_TURNSTILE_SITE_KEY=your_turnstile_site_key
 ```
 
 If not set, the app falls back to `baej12`.
+
+`VITE_TURNSTILE_SITE_KEY` enables the CAPTCHA challenge before the resume URL is requested.
 
 The example file is available at `.env.example`.
 
