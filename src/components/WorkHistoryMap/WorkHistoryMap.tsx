@@ -208,6 +208,12 @@ export const WorkHistoryMap = () => {
     centerY: number;
     distance: number;
   } | null>(null);
+  const wheelZoomAccumRef = useRef<{
+    delta: number;
+    timeoutId: ReturnType<typeof setTimeout> | null;
+    clientX: number;
+    clientY: number;
+  }>({ delta: 0, timeoutId: null, clientX: 0, clientY: 0 });
 
   // Tick every minute to keep day/night shadow current
   useEffect(() => {
@@ -223,6 +229,9 @@ export const WorkHistoryMap = () => {
     return () => {
       if (zoomAnimationFrameRef.current !== null) {
         window.cancelAnimationFrame(zoomAnimationFrameRef.current);
+      }
+      if (wheelZoomAccumRef.current.timeoutId !== null) {
+        clearTimeout(wheelZoomAccumRef.current.timeoutId);
       }
     };
   }, []);
@@ -656,17 +665,37 @@ export const WorkHistoryMap = () => {
     event.preventDefault();
     event.stopPropagation();
 
-    const cursorInSvg = getSvgPointFromClient(event.clientX, event.clientY);
-    if (!cursorInSvg) return;
-
-    const cursorX = cursorInSvg.x;
-    const cursorY = cursorInSvg.y;
-    const currentZoom = viewTransformRef.current.zoom;
+    const wheelAccum = wheelZoomAccumRef.current;
+    
+    // Accumulate wheel delta
     const normalizedDelta = Math.max(-3, Math.min(3, -event.deltaY / 100));
-    const zoomFactor = Math.pow(1.045, normalizedDelta);
-    const nextZoom = clampZoom(currentZoom * zoomFactor);
+    wheelAccum.delta += normalizedDelta;
+    wheelAccum.clientX = event.clientX;
+    wheelAccum.clientY = event.clientY;
 
-    zoomAtSvgPoint(cursorX, cursorY, nextZoom);
+    // Clear previous timeout
+    if (wheelAccum.timeoutId !== null) {
+      clearTimeout(wheelAccum.timeoutId);
+    }
+
+    // Apply accumulated zoom after a short delay
+    wheelAccum.timeoutId = setTimeout(() => {
+      const cursorInSvg = getSvgPointFromClient(wheelAccum.clientX, wheelAccum.clientY);
+      if (!cursorInSvg) return;
+
+      const cursorX = cursorInSvg.x;
+      const cursorY = cursorInSvg.y;
+      const currentZoom = viewTransformRef.current.zoom;
+      const zoomFactor = Math.pow(1.045, wheelAccum.delta);
+      const nextZoom = clampZoom(currentZoom * zoomFactor);
+
+      // Apply zoom immediately without animation to avoid jumpiness
+      zoomAtSvgPoint(cursorX, cursorY, nextZoom, false);
+
+      // Reset accumulator
+      wheelAccum.delta = 0;
+      wheelAccum.timeoutId = null;
+    }, 8); // Batch rapid wheel events
   };
 
   const handlePointerDown = (event: React.PointerEvent<SVGSVGElement>) => {
