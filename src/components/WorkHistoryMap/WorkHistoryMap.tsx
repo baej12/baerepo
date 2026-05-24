@@ -111,6 +111,49 @@ const ZOOM_BUTTON_FACTOR = 1.36;
 const ZOOM_ANIMATION_MS = 240;
 
 type ViewTransform = typeof DEFAULT_VIEW_TRANSFORM;
+type MercatorProjection = ReturnType<typeof geoMercator>;
+
+const clampZoom = (value: number) => Math.min(6, Math.max(1, value));
+
+const clampViewTransform = (transform: ViewTransform): ViewTransform => {
+  const zoom = clampZoom(transform.zoom);
+  const scaledTop = MAP_VERTICAL_BOUNDS.top * zoom;
+  const scaledBottom = MAP_VERTICAL_BOUNDS.bottom * zoom;
+  const scaledMapHeight = scaledBottom - scaledTop;
+
+  if (scaledMapHeight <= VIEWBOX.height) {
+    return {
+      ...transform,
+      zoom,
+      y: (VIEWBOX.height - scaledMapHeight) / 2 - scaledTop,
+    };
+  }
+
+  return {
+    ...transform,
+    zoom,
+    y: Math.min(-scaledTop, Math.max(VIEWBOX.height - scaledBottom, transform.y)),
+  };
+};
+
+const createProjection = () =>
+  geoMercator()
+    .scale(MERCATOR_SCALE)
+    .translate([VIEWBOX.width / 2, VIEWBOX.height / 2])
+    .precision(0.1);
+
+const createAmericaViewTransform = (projection: MercatorProjection) => {
+  const center = projection(AMERICA_CENTER);
+  if (!center) return DEFAULT_VIEW_TRANSFORM;
+
+  return {
+    zoom: INITIAL_ZOOM,
+    x: VIEWBOX.width / 2 - center[0] * INITIAL_ZOOM,
+    y: VIEWBOX.height / 2 - center[1] * INITIAL_ZOOM,
+  };
+};
+
+const INITIAL_VIEW_TRANSFORM = clampViewTransform(createAmericaViewTransform(createProjection()));
 
 function buildJobPins(jobs: Job[]): MapPin[] {
   const groups: Record<string, MapPin> = {};
@@ -191,11 +234,11 @@ const US_CITIES: Array<{ name: string; coordinates: [number, number] }> = [
 
 export const WorkHistoryMap = () => {
   const [activePin, setActivePin] = useState<MapPin | null>(null);
-  const [viewTransform, setViewTransform] = useState(DEFAULT_VIEW_TRANSFORM);
+  const [viewTransform, setViewTransform] = useState(INITIAL_VIEW_TRANSFORM);
   const [isDragging, setIsDragging] = useState(false);
   const [currentTime, setCurrentTime] = useState<Date>(() => new Date());
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const viewTransformRef = useRef<ViewTransform>(DEFAULT_VIEW_TRANSFORM);
+  const viewTransformRef = useRef<ViewTransform>(INITIAL_VIEW_TRANSFORM);
   const zoomAnimationFrameRef = useRef<number | null>(null);
   const pointerTapRef = useRef<{ x: number; y: number; pinId: string | null } | null>(null);
   const activePointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
@@ -258,30 +301,9 @@ export const WorkHistoryMap = () => {
     };
   }, []);
 
-  const projection = useMemo(
-    () =>
-      geoMercator()
-        .scale(MERCATOR_SCALE)
-        .translate([VIEWBOX.width / 2, VIEWBOX.height / 2])
-        .precision(0.1),
-    []
-  );
+  const projection = useMemo(() => createProjection(), []);
 
-  const americaViewTransform = useMemo(() => {
-    const center = projection(AMERICA_CENTER);
-    if (!center) return DEFAULT_VIEW_TRANSFORM;
-
-    return {
-      zoom: INITIAL_ZOOM,
-      x: VIEWBOX.width / 2 - center[0] * INITIAL_ZOOM,
-      y: VIEWBOX.height / 2 - center[1] * INITIAL_ZOOM,
-    };
-  }, [projection]);
-
-  useEffect(() => {
-    setViewTransform(clampViewTransform(americaViewTransform));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [americaViewTransform]);
+  const americaViewTransform = useMemo(() => createAmericaViewTransform(projection), [projection]);
 
   const pathGenerator = useMemo(() => geoPath(projection), [projection]);
 
@@ -425,29 +447,6 @@ export const WorkHistoryMap = () => {
 
   const sunLongitude = formatCoordinateLabel(solarPoint[0], 'E', 'W');
   const sunLatitude = formatCoordinateLabel(solarPoint[1], 'N', 'S');
-
-  const clampZoom = (value: number) => Math.min(6, Math.max(1, value));
-
-  const clampViewTransform = (transform: ViewTransform): ViewTransform => {
-    const zoom = clampZoom(transform.zoom);
-    const scaledTop = MAP_VERTICAL_BOUNDS.top * zoom;
-    const scaledBottom = MAP_VERTICAL_BOUNDS.bottom * zoom;
-    const scaledMapHeight = scaledBottom - scaledTop;
-
-    if (scaledMapHeight <= VIEWBOX.height) {
-      return {
-        ...transform,
-        zoom,
-        y: (VIEWBOX.height - scaledMapHeight) / 2 - scaledTop,
-      };
-    }
-
-    return {
-      ...transform,
-      zoom,
-      y: Math.min(-scaledTop, Math.max(VIEWBOX.height - scaledBottom, transform.y)),
-    };
-  };
 
   const cancelZoomAnimation = () => {
     if (zoomAnimationFrameRef.current !== null) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './PdfViewer.css';
 
 interface PdfViewerProps {
@@ -9,7 +9,18 @@ interface PdfViewerProps {
 export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
     const overlayRef = useRef<HTMLDivElement>(null);
     const iframeRef = useRef<HTMLIFrameElement>(null);
+    const [isLoaded, setIsLoaded] = useState<boolean>(false);
+    const [zoom, setZoom] = useState<number>(1);
     const viewerUrl = url.includes('#') ? url : `${url}#view=FitH&zoom=page-width`;
+
+    useEffect(() => {
+        setIsLoaded(false);
+        setZoom(1);
+    }, [viewerUrl]);
+
+    const zoomOut = () => setZoom(currentZoom => Math.max(0.75, Number((currentZoom - 0.15).toFixed(2))));
+    const zoomIn = () => setZoom(currentZoom => Math.min(2.5, Number((currentZoom + 0.15).toFixed(2))));
+    const resetZoom = () => setZoom(1);
 
     useEffect(() => {
         // Keep the PDF overlay modal-like so keyboard users can close it reliably.
@@ -80,12 +91,41 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
                 <span aria-hidden="true">&times;</span>
             </button>
             <div className="pdf-viewer-container" onClick={(e) => e.stopPropagation()}>
-                <iframe
-                    ref={iframeRef}
-                    src={viewerUrl}
-                    className="pdf-viewer-frame"
-                    title="Resume PDF"
-                />
+                <div className="pdf-viewer-toolbar" aria-label="Resume viewer controls">
+                    <button type="button" onClick={zoomOut} aria-label="Zoom out" disabled={zoom <= 0.75}>
+                        &minus;
+                    </button>
+                    <button type="button" onClick={resetZoom} aria-label="Fit resume to screen">
+                        {Math.round(zoom * 100)}%
+                    </button>
+                    <button type="button" onClick={zoomIn} aria-label="Zoom in" disabled={zoom >= 2.5}>
+                        +
+                    </button>
+                </div>
+                {!isLoaded && (
+                    <div className="pdf-viewer-loading" aria-live="polite">
+                        <div className="pdf-viewer-loading-ring" aria-hidden="true" />
+                        <p>Loading resume...</p>
+                    </div>
+                )}
+                <div className="pdf-viewer-stage">
+                    <div
+                        className="pdf-viewer-frame-shell"
+                        style={{
+                            width: `${100 / zoom}%`,
+                            height: `${100 / zoom}%`,
+                            transform: `scale(${zoom})`,
+                        }}
+                    >
+                        <iframe
+                            ref={iframeRef}
+                            src={viewerUrl}
+                            className="pdf-viewer-frame"
+                            title="Resume PDF"
+                            onLoad={() => setIsLoaded(true)}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );
