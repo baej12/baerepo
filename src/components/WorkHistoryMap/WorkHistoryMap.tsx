@@ -879,7 +879,7 @@ export const WorkHistoryMap = () => {
           <div className="map-footer">
             <div className="map-caption">
               <span className="map-caption-dot" />
-              <span>Click a marker for details · Add custom pins in mapPlaces.json</span>
+              <span>Click a marker for details · Add custom pins in mapPlaces.ts</span>
               <span className="map-utc-time">
                 {currentTime.getUTCHours().toString().padStart(2, '0')}
                 :{currentTime.getUTCMinutes().toString().padStart(2, '0')} UTC · {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} local
