@@ -45,6 +45,7 @@ const Mainpage: React.FC = () => {
     const [isResumeRequestPending, setIsResumeRequestPending] = useState<boolean>(false);
     const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
     const turnstileWidgetIdRef = useRef<string | null>(null);
+    const resumeScrollPositionRef = useRef<{ top: number; left: number } | null>(null);
     
     const jobs: Job[] = jobsData;
     const projects: Project[] = projectsData;
@@ -196,6 +197,71 @@ const Mainpage: React.FC = () => {
 
         return () => script.removeEventListener('load', onLoad);
     }, [showResumeCaptcha, hasTurnstileSiteKey, turnstileSiteKey]);
+
+    useEffect(() => {
+        if (showResumeCaptcha) {
+            const routeShell = document.querySelector('.App-route-shell') as HTMLElement | null;
+            const previousBodyOverflow = document.body.style.overflow;
+            const previousHtmlOverflow = document.documentElement.style.overflow;
+
+            if (!resumeScrollPositionRef.current && routeShell) {
+                resumeScrollPositionRef.current = {
+                    top: routeShell.scrollTop,
+                    left: routeShell.scrollLeft,
+                };
+            }
+
+            try {
+                document.body.classList.add('resume-captcha-open');
+                document.documentElement.classList.add('resume-captcha-open');
+                document.body.style.overflow = 'hidden';
+                document.documentElement.style.overflow = 'hidden';
+            } catch (e) {}
+
+            return () => {
+                try {
+                    document.body.classList.remove('resume-captcha-open');
+                    document.documentElement.classList.remove('resume-captcha-open');
+                    document.body.style.overflow = previousBodyOverflow;
+                    document.documentElement.style.overflow = previousHtmlOverflow;
+                } catch (e) {}
+            };
+        }
+
+        return;
+    }, [showResumeCaptcha]);
+
+    useEffect(() => {
+        if (showPdfViewer) {
+            const routeShell = document.querySelector('.App-route-shell') as HTMLElement | null;
+
+            if (!resumeScrollPositionRef.current && routeShell) {
+                resumeScrollPositionRef.current = {
+                    top: routeShell.scrollTop,
+                    left: routeShell.scrollLeft,
+                };
+            }
+        }
+    }, [showPdfViewer]);
+
+    const restoreResumeScrollPosition = () => {
+        const savedPosition = resumeScrollPositionRef.current;
+        resumeScrollPositionRef.current = null;
+
+        if (!savedPosition) {
+            return;
+        }
+
+        requestAnimationFrame(() => {
+            const routeShell = document.querySelector('.App-route-shell') as HTMLElement | null;
+            if (routeShell) {
+                routeShell.scrollTo(savedPosition);
+                return;
+            }
+
+            window.scrollTo(savedPosition);
+        });
+    };
 
     useEffect(() => {
         if (showResumeCaptcha) {
@@ -588,7 +654,10 @@ const Mainpage: React.FC = () => {
                         <button
                             type="button"
                             className="resume-captcha-button secondary"
-                            onClick={() => setShowResumeCaptcha(false)}
+                            onClick={() => {
+                                setShowResumeCaptcha(false);
+                                restoreResumeScrollPosition();
+                            }}
                             disabled={isResumeRequestPending}
                         >
                             Cancel
@@ -611,6 +680,7 @@ const Mainpage: React.FC = () => {
                 onClose={() => {
                     setShowPdfViewer(false);
                     setResumeViewerUrl('');
+                    restoreResumeScrollPosition();
                 }}
             />
         )}

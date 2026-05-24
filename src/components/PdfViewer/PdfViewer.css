@@ -16,6 +16,7 @@
     padding-right: max(1rem, env(safe-area-inset-right));
     animation: fadeIn 0.2s ease-out;
     overflow: auto;
+    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
 }
 
