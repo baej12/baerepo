@@ -13,7 +13,9 @@ import aboutData from '../../data/about';
 import profileData from '../../data/profile';
 
 const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+const TURNSTILE_ORIGIN = 'https://challenges.cloudflare.com';
 const RESUME_URL_RESPONSE_KEYS = ['url', 'resumeUrl', 'resume_url', 'downloadUrl', 'download_url'] as const;
+let turnstileScriptPromise: Promise<void> | null = null;
 
 declare global {
     interface Window {
@@ -30,6 +32,86 @@ declare global {
     }
 }
 
+const addPreconnect = (href: string) => {
+    if (typeof document === 'undefined' || !href) return;
+    if (document.querySelector(`link[rel="preconnect"][href="${href}"]`)) return;
+
+    const link = document.createElement('link');
+    link.rel = 'preconnect';
+    link.href = href;
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+};
+
+const loadTurnstileScript = () => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+        return Promise.resolve();
+    }
+
+    if (window.turnstile) {
+        return Promise.resolve();
+    }
+
+    if (turnstileScriptPromise) {
+        return turnstileScriptPromise;
+    }
+
+    turnstileScriptPromise = new Promise<void>((resolve, reject) => {
+        const existingScript = document.querySelector(`script[src="${TURNSTILE_SCRIPT_SRC}"]`) as HTMLScriptElement | null;
+        const script = existingScript || document.createElement('script');
+
+        const onLoad = () => resolve();
+        const onError = () => {
+            turnstileScriptPromise = null;
+            reject(new Error('Unable to load CAPTCHA script.'));
+        };
+
+        script.addEventListener('load', onLoad, { once: true });
+        script.addEventListener('error', onError, { once: true });
+
+        if (!existingScript) {
+            script.src = TURNSTILE_SCRIPT_SRC;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+    });
+
+    return turnstileScriptPromise;
+};
+
+const isMobileViewport = () => window.matchMedia('(max-width: 768px)').matches;
+
+const getRouteScrollContainer = () => document.querySelector('.App-route-shell') as HTMLElement | null;
+
+const getSectionReferenceElement = (target: HTMLElement) => (
+    (target.querySelector('.section-heading') as HTMLElement | null)
+    || (target.querySelector('h2, h3, h1') as HTMLElement | null)
+    || target
+);
+
+const scrollToSectionReference = (referenceEl: HTMLElement, behavior: ScrollBehavior) => {
+    if (!isMobileViewport()) {
+        referenceEl.scrollIntoView({ behavior, block: 'start' });
+        return;
+    }
+
+    const routeShell = getRouteScrollContainer();
+    if (!routeShell) {
+        referenceEl.scrollIntoView({ behavior, block: 'start' });
+        return;
+    }
+
+    const shellTop = routeShell.getBoundingClientRect().top;
+    const currentTop = routeShell.scrollTop;
+    const targetTop = currentTop + referenceEl.getBoundingClientRect().top - shellTop - 12;
+
+    routeShell.scrollTo({
+        top: Math.max(0, targetTop),
+        behavior,
+    });
+};
+
 const Mainpage: React.FC = () => {
     const [activeSection, setActiveSection] = useState<string>('about');
     const activeSectionRef = useRef<string>('about');
@@ -42,6 +124,7 @@ const Mainpage: React.FC = () => {
     const [resumeViewerUrl, setResumeViewerUrl] = useState<string>('');
     const [captchaToken, setCaptchaToken] = useState<string>('');
     const [resumeRequestError, setResumeRequestError] = useState<string>('');
+    const [isCaptchaWidgetReady, setIsCaptchaWidgetReady] = useState<boolean>(false);
     const [isResumeRequestPending, setIsResumeRequestPending] = useState<boolean>(false);
     const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
     const turnstileWidgetIdRef = useRef<string | null>(null);
@@ -131,11 +214,30 @@ const Mainpage: React.FC = () => {
         }
     };
 
+    useEffect(() => {
+        if (!hasTurnstileSiteKey) {
+            return;
+        }
+
+        addPreconnect(TURNSTILE_ORIGIN);
+
+        try {
+            addPreconnect(new URL(profile.resumeUrl).origin);
+        } catch (e) {}
+
+        const preloadTimer = window.setTimeout(() => {
+            loadTurnstileScript().catch(() => {});
+        }, 300);
+
+        return () => window.clearTimeout(preloadTimer);
+    }, [hasTurnstileSiteKey, profile.resumeUrl]);
+
     // Listen for custom event to open resume
     useEffect(() => {
         const handleOpenResume = () => {
             setCaptchaToken('');
             setResumeRequestError('');
+            setIsCaptchaWidgetReady(false);
             setShowResumeCaptcha(true);
         };
         window.addEventListener('openResume', handleOpenResume as EventListener);
@@ -173,6 +275,7 @@ const Mainpage: React.FC = () => {
                     setResumeRequestError('CAPTCHA failed to load. Please refresh and try again.');
                 },
             });
+            setIsCaptchaWidgetReady(true);
         };
 
         if (window.turnstile) {
@@ -180,22 +283,22 @@ const Mainpage: React.FC = () => {
             return;
         }
 
-        const existingScript = document.querySelector(`script[src="${TURNSTILE_SCRIPT_SRC}"]`) as HTMLScriptElement | null;
-        const onLoad = () => renderTurnstile();
+        let isCanceled = false;
+        loadTurnstileScript()
+            .then(() => {
+                if (!isCanceled) {
+                    renderTurnstile();
+                }
+            })
+            .catch(() => {
+                if (!isCanceled) {
+                    setResumeRequestError('CAPTCHA failed to load. Please refresh and try again.');
+                }
+            });
 
-        if (existingScript) {
-            existingScript.addEventListener('load', onLoad);
-            return () => existingScript.removeEventListener('load', onLoad);
-        }
-
-        const script = document.createElement('script');
-        script.src = TURNSTILE_SCRIPT_SRC;
-        script.async = true;
-        script.defer = true;
-        script.addEventListener('load', onLoad);
-        document.head.appendChild(script);
-
-        return () => script.removeEventListener('load', onLoad);
+        return () => {
+            isCanceled = true;
+        };
     }, [showResumeCaptcha, hasTurnstileSiteKey, turnstileSiteKey]);
 
     useEffect(() => {
@@ -324,18 +427,16 @@ const Mainpage: React.FC = () => {
             if (!h) return;
             const target = document.querySelector(h) as HTMLElement | null;
             if (!target) return;
-            const sectionHeading = (target.querySelector('.section-heading') as HTMLElement | null)
-                || (target.querySelector('h2, h3, h1') as HTMLElement | null);
-            const referenceEl = sectionHeading || target;
+            const referenceEl = getSectionReferenceElement(target);
 
             // Wait a short moment so CSS variable and layout settle (fonts, resize observers)
             window.setTimeout(() => {
                 // Use instant (auto) behavior on load so the browser doesn't animate from top-of-page to the hash position
-                referenceEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+                scrollToSectionReference(referenceEl, 'auto');
 
                 // Final precise correction: align reference top with header top if header exists
                 const header = document.querySelector('.header-name') as HTMLElement | null;
-                if (header) {
+                if (header && !isMobileViewport()) {
                     const delta = referenceEl.getBoundingClientRect().top - header.getBoundingClientRect().top;
                     if (Math.abs(delta) > 1) {
                         window.scrollBy({ top: -delta, behavior: 'auto' });
@@ -544,9 +645,7 @@ const Mainpage: React.FC = () => {
         const target = document.querySelector(href) as HTMLElement | null;
         if (!target) return;
 
-        const sectionHeading = (target.querySelector('.section-heading') as HTMLElement | null)
-            || (target.querySelector('h2, h3, h1') as HTMLElement | null);
-        const referenceEl = sectionHeading || target;
+        const referenceEl = getSectionReferenceElement(target);
 
         // Immediately set the active section when clicking
         const sectionId = href.slice(1);
@@ -570,8 +669,7 @@ const Mainpage: React.FC = () => {
         activeSectionRef.current = sectionId;
         setActiveSection(sectionId);
 
-        // Use scrollIntoView with scroll-margin-top (set by CSS variable) to align top edge with header
-        (referenceEl as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        scrollToSectionReference(referenceEl, 'smooth');
         const { pathname, search } = window.location;
         window.history.replaceState(null, '', `${pathname}${search}${href}`);
     };
@@ -641,7 +739,14 @@ const Mainpage: React.FC = () => {
                     <p>Please complete the CAPTCHA challenge to continue.</p>
 
                     {hasTurnstileSiteKey ? (
-                        <div className="resume-captcha-widget" ref={turnstileContainerRef} />
+                        <div className="resume-captcha-widget">
+                            {!isCaptchaWidgetReady && (
+                                <div className="resume-captcha-loading" aria-live="polite">
+                                    Loading verification...
+                                </div>
+                            )}
+                            <div ref={turnstileContainerRef} />
+                        </div>
                     ) : (
                         <p className="resume-captcha-error">
                             CAPTCHA is not configured yet. Set VITE_TURNSTILE_SITE_KEY to enable protected resume access.

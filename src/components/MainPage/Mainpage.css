@@ -682,6 +682,14 @@ section {
     min-height: 70px;
 }
 
+.resume-captcha-loading {
+    display: flex;
+    align-items: center;
+    min-height: 70px;
+    color: var(--color-text-muted);
+    font-size: 0.92rem;
+}
+
 .resume-captcha-error {
     margin-top: 0.9rem;
     color: #fca5a5;
