@@ -4,12 +4,31 @@ import { AboutSection } from '../AboutSection/AboutSection';
 import { ExperienceSection } from '../ExperienceSection/ExperienceSection';
 import { ProjectsSection } from '../ProjectsSection/ProjectsSection';
 import React, { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Job, Project, AboutContent, Profile } from '../../types/content';
 import jobsData from '../../data/jobs';
 import projectsData from '../../data/projects';
 import aboutData from '../../data/about';
 import profileData from '../../data/profile';
+
+const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+const RESUME_URL_RESPONSE_KEYS = ['url', 'resumeUrl', 'resume_url', 'downloadUrl', 'download_url'] as const;
+
+declare global {
+    interface Window {
+        turnstile?: {
+            render: (element: HTMLElement, options: {
+                sitekey: string;
+                callback?: (token: string) => void;
+                'expired-callback'?: () => void;
+                'error-callback'?: () => void;
+                theme?: 'light' | 'dark' | 'auto';
+            }) => string;
+            remove: (widgetId: string) => void;
+        };
+    }
+}
 
 const Mainpage: React.FC = () => {
     const [activeSection, setActiveSection] = useState<string>('about');
@@ -19,18 +38,241 @@ const Mainpage: React.FC = () => {
     const manualScrollTimerRef = useRef<number | null>(null);
     const [sections, setSections] = useState<{ id: string; label: string }[]>([]);
     const [showPdfViewer, setShowPdfViewer] = useState<boolean>(false);
+    const [showResumeCaptcha, setShowResumeCaptcha] = useState<boolean>(false);
+    const [resumeViewerUrl, setResumeViewerUrl] = useState<string>('');
+    const [captchaToken, setCaptchaToken] = useState<string>('');
+    const [resumeRequestError, setResumeRequestError] = useState<string>('');
+    const [isResumeRequestPending, setIsResumeRequestPending] = useState<boolean>(false);
+    const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
+    const turnstileWidgetIdRef = useRef<string | null>(null);
+    const resumeScrollPositionRef = useRef<{ top: number; left: number } | null>(null);
     
     const jobs: Job[] = jobsData;
     const projects: Project[] = projectsData;
     const about: AboutContent = aboutData;
     const profile: Profile = profileData;
+    const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || '';
+    const hasTurnstileSiteKey = turnstileSiteKey.trim().length > 0;
+
+    const parseResumeUrl = (payload: unknown): string | null => {
+        if (typeof payload === 'string') {
+            const trimmed = payload.trim();
+            return trimmed.startsWith('http://') || trimmed.startsWith('https://') ? trimmed : null;
+        }
+
+        if (payload && typeof payload === 'object') {
+            const record = payload as Record<string, unknown>;
+            for (const key of RESUME_URL_RESPONSE_KEYS) {
+                const value = record[key];
+                if (typeof value === 'string') {
+                    const trimmed = value.trim();
+                    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+                        return trimmed;
+                    }
+                }
+            }
+        }
+
+        return null;
+    };
+
+    const requestResumeUrl = async () => {
+        if (!captchaToken) {
+            setResumeRequestError('Please complete the CAPTCHA challenge first.');
+            return;
+        }
+
+        setResumeRequestError('');
+        setIsResumeRequestPending(true);
+
+        try {
+            const response = await fetch(profile.resumeUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ captchaToken }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Resume endpoint failed with status ${response.status}.`);
+            }
+
+            const contentType = response.headers.get('content-type') || '';
+            let urlFromResponse: string | null = null;
+
+            if (contentType.includes('application/json')) {
+                const payload = await response.json();
+                urlFromResponse = parseResumeUrl(payload);
+            } else {
+                const text = await response.text();
+                urlFromResponse = parseResumeUrl(text);
+                if (!urlFromResponse) {
+                    try {
+                        const payload = JSON.parse(text);
+                        urlFromResponse = parseResumeUrl(payload);
+                    } catch (e) {
+                        urlFromResponse = null;
+                    }
+                }
+            }
+
+            if (!urlFromResponse) {
+                throw new Error('No resume URL was found in the endpoint response.');
+            }
+
+            setResumeViewerUrl(urlFromResponse);
+            setShowResumeCaptcha(false);
+            setShowPdfViewer(true);
+        } catch (e) {
+            setResumeRequestError('Unable to verify challenge or load resume. Please try again.');
+        } finally {
+            setIsResumeRequestPending(false);
+        }
+    };
 
     // Listen for custom event to open resume
     useEffect(() => {
-        const handleOpenResume = () => setShowPdfViewer(true);
+        const handleOpenResume = () => {
+            setCaptchaToken('');
+            setResumeRequestError('');
+            setShowResumeCaptcha(true);
+        };
         window.addEventListener('openResume', handleOpenResume as EventListener);
         return () => window.removeEventListener('openResume', handleOpenResume as EventListener);
     }, []);
+
+    useEffect(() => {
+        if (!showResumeCaptcha || !hasTurnstileSiteKey) {
+            return;
+        }
+
+        const renderTurnstile = () => {
+            if (!window.turnstile || !turnstileContainerRef.current) {
+                return;
+            }
+
+            if (turnstileWidgetIdRef.current) {
+                window.turnstile.remove(turnstileWidgetIdRef.current);
+                turnstileWidgetIdRef.current = null;
+            }
+
+            turnstileWidgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
+                sitekey: turnstileSiteKey,
+                theme: 'dark',
+                callback: (token: string) => {
+                    setCaptchaToken(token);
+                    setResumeRequestError('');
+                },
+                'expired-callback': () => {
+                    setCaptchaToken('');
+                    setResumeRequestError('CAPTCHA expired. Please complete it again.');
+                },
+                'error-callback': () => {
+                    setCaptchaToken('');
+                    setResumeRequestError('CAPTCHA failed to load. Please refresh and try again.');
+                },
+            });
+        };
+
+        if (window.turnstile) {
+            renderTurnstile();
+            return;
+        }
+
+        const existingScript = document.querySelector(`script[src="${TURNSTILE_SCRIPT_SRC}"]`) as HTMLScriptElement | null;
+        const onLoad = () => renderTurnstile();
+
+        if (existingScript) {
+            existingScript.addEventListener('load', onLoad);
+            return () => existingScript.removeEventListener('load', onLoad);
+        }
+
+        const script = document.createElement('script');
+        script.src = TURNSTILE_SCRIPT_SRC;
+        script.async = true;
+        script.defer = true;
+        script.addEventListener('load', onLoad);
+        document.head.appendChild(script);
+
+        return () => script.removeEventListener('load', onLoad);
+    }, [showResumeCaptcha, hasTurnstileSiteKey, turnstileSiteKey]);
+
+    useEffect(() => {
+        if (showResumeCaptcha) {
+            const routeShell = document.querySelector('.App-route-shell') as HTMLElement | null;
+            const previousBodyOverflow = document.body.style.overflow;
+            const previousHtmlOverflow = document.documentElement.style.overflow;
+
+            if (!resumeScrollPositionRef.current && routeShell) {
+                resumeScrollPositionRef.current = {
+                    top: routeShell.scrollTop,
+                    left: routeShell.scrollLeft,
+                };
+            }
+
+            try {
+                document.body.classList.add('resume-captcha-open');
+                document.documentElement.classList.add('resume-captcha-open');
+                document.body.style.overflow = 'hidden';
+                document.documentElement.style.overflow = 'hidden';
+            } catch (e) {}
+
+            return () => {
+                try {
+                    document.body.classList.remove('resume-captcha-open');
+                    document.documentElement.classList.remove('resume-captcha-open');
+                    document.body.style.overflow = previousBodyOverflow;
+                    document.documentElement.style.overflow = previousHtmlOverflow;
+                } catch (e) {}
+            };
+        }
+
+        return;
+    }, [showResumeCaptcha]);
+
+    useEffect(() => {
+        if (showPdfViewer) {
+            const routeShell = document.querySelector('.App-route-shell') as HTMLElement | null;
+
+            if (!resumeScrollPositionRef.current && routeShell) {
+                resumeScrollPositionRef.current = {
+                    top: routeShell.scrollTop,
+                    left: routeShell.scrollLeft,
+                };
+            }
+        }
+    }, [showPdfViewer]);
+
+    const restoreResumeScrollPosition = () => {
+        const savedPosition = resumeScrollPositionRef.current;
+        resumeScrollPositionRef.current = null;
+
+        if (!savedPosition) {
+            return;
+        }
+
+        requestAnimationFrame(() => {
+            const routeShell = document.querySelector('.App-route-shell') as HTMLElement | null;
+            if (routeShell) {
+                routeShell.scrollTo(savedPosition);
+                return;
+            }
+
+            window.scrollTo(savedPosition);
+        });
+    };
+
+    useEffect(() => {
+        if (showResumeCaptcha) {
+            return;
+        }
+
+        if (turnstileWidgetIdRef.current && window.turnstile) {
+            window.turnstile.remove(turnstileWidgetIdRef.current);
+            turnstileWidgetIdRef.current = null;
+        }
+    }, [showResumeCaptcha]);
 
     // compute header offset and expose as CSS variable so scroll-margin-top can handle alignment
     useEffect(() => {
@@ -392,10 +634,54 @@ const Mainpage: React.FC = () => {
             <ExperienceSection jobs={jobs} />
             <ProjectsSection projects={projects} />
         </div>
+        {showResumeCaptcha && createPortal((
+            <div className="resume-captcha-overlay" role="dialog" aria-modal="true" aria-label="Resume access verification">
+                <div className="resume-captcha-modal">
+                    <h3>Verify Before Viewing Resume</h3>
+                    <p>Please complete the CAPTCHA challenge to continue.</p>
+
+                    {hasTurnstileSiteKey ? (
+                        <div className="resume-captcha-widget" ref={turnstileContainerRef} />
+                    ) : (
+                        <p className="resume-captcha-error">
+                            CAPTCHA is not configured yet. Set VITE_TURNSTILE_SITE_KEY to enable protected resume access.
+                        </p>
+                    )}
+
+                    {resumeRequestError && <p className="resume-captcha-error">{resumeRequestError}</p>}
+
+                    <div className="resume-captcha-actions">
+                        <button
+                            type="button"
+                            className="resume-captcha-button secondary"
+                            onClick={() => {
+                                setShowResumeCaptcha(false);
+                                restoreResumeScrollPosition();
+                            }}
+                            disabled={isResumeRequestPending}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            className="resume-captcha-button primary"
+                            onClick={requestResumeUrl}
+                            disabled={!hasTurnstileSiteKey || !captchaToken || isResumeRequestPending}
+                        >
+                            {isResumeRequestPending ? 'Verifying...' : 'Continue'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        ), document.body)}
         {showPdfViewer && (
             <PdfViewer 
-                url={profile.resumeUrl}
-                onClose={() => setShowPdfViewer(false)}
+                url={resumeViewerUrl}
+                onClose={() => {
+                    setShowPdfViewer(false);
+                    setResumeViewerUrl('');
+                    restoreResumeScrollPosition();
+                }}
             />
         )}
         </div>

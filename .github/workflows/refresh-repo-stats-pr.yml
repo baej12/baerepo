@@ -16,6 +16,9 @@ concurrency:
 jobs:
   refresh-repo-stats:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -43,11 +46,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ vars.GITHUB_USERNAME }}
 
+      - name: Verify PR automation token
+        if: steps.detect-script.outputs.has_script == 'true'
+        run: |
+          if [ -z "${{ secrets.REPO_STATS_TOKEN }}" ]; then
+            echo "REPO_STATS_TOKEN is not set."
+            echo "Set a PAT in repository secrets with contents:write and pull_requests:write to allow PRs that trigger required checks."
+            exit 1
+          fi
+
       - name: Create or update PR
         if: steps.detect-script.outputs.has_script == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.REPO_STATS_TOKEN }}
           branch: automation/daily-repo-stats
           delete-branch: false
           commit-message: "chore: refresh generated repo stats"
