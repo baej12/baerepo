@@ -27,7 +27,7 @@ export const generatedRepoStats: GeneratedRepoStats[] = [
     "htmlUrl": "https://github.com/baej12/baerepo",
     "description": "This is the repository that hosts my website! ",
     "defaultBranch": "master",
-    "updatedAt": "2026-04-13T15:03:30Z",
+    "updatedAt": "2026-05-24T03:08:05Z",
     "primaryLanguage": "TypeScript",
     "languages": [
       "TypeScript",
@@ -37,28 +37,28 @@ export const generatedRepoStats: GeneratedRepoStats[] = [
     ],
     "recentCommits": [
       {
-        "sha": "5bdb042",
-        "message": "Merge pull request #52 from baej12/automation/daily-repo-stats",
-        "date": "2026-04-13",
-        "additions": 14,
-        "deletions": 14,
+        "sha": "ff19d73",
+        "message": "Merge pull request #53 from baej12/automation/daily-repo-stats",
+        "date": "2026-05-24",
+        "additions": 16,
+        "deletions": 16,
         "changedFiles": 1
       },
       {
-        "sha": "ca838b1",
-        "message": "Merge pull request #51 from baej12/dependabot/npm_and_yarn/minor-updates-f1f5b0c85e",
-        "date": "2026-04-13",
-        "additions": 9,
-        "deletions": 9,
-        "changedFiles": 2
+        "sha": "cfe267a",
+        "message": "Merge pull request #64 from baej12/fix/resume-modal-scroll-lock",
+        "date": "2026-05-24",
+        "additions": 88,
+        "deletions": 3,
+        "changedFiles": 5
       },
       {
-        "sha": "3bd1f33",
-        "message": "Merge pull request #50 from baej12/dependabot/npm_and_yarn/patch-updates-57a1d6e0d6",
-        "date": "2026-04-13",
-        "additions": 104,
-        "deletions": 105,
-        "changedFiles": 2
+        "sha": "e639fe2",
+        "message": "Fix resume modal scroll behavior",
+        "date": "2026-05-24",
+        "additions": 88,
+        "deletions": 3,
+        "changedFiles": 5
       }
     ]
   },
