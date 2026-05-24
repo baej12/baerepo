@@ -197,6 +197,7 @@ export const WorkHistoryMap = () => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const viewTransformRef = useRef<ViewTransform>(DEFAULT_VIEW_TRANSFORM);
   const zoomAnimationFrameRef = useRef<number | null>(null);
+  const pointerTapRef = useRef<{ x: number; y: number; pinId: string | null } | null>(null);
   const activePointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
   const gestureStartRef = useRef<{
     type: 'pan' | 'pinch';
@@ -401,6 +402,13 @@ export const WorkHistoryMap = () => {
   const selectedPinLabel = activePin?.title ?? 'None';
   const selectedPinJobs = activePin?.jobs?.length ?? 0;
 
+  const selectPinById = (pinId: string) => {
+    const nextPin = mapPins.find(pin => pin.id === pinId);
+    if (!nextPin) return;
+
+    setActivePin(prev => (prev?.id === nextPin.id ? null : nextPin));
+  };
+
   const formatCoordinateLabel = (value: number, positiveHemisphere: string, negativeHemisphere: string) => {
     const hemisphere = value >= 0 ? positiveHemisphere : negativeHemisphere;
     return `${Math.abs(value).toFixed(1)}°${hemisphere}`;
@@ -444,7 +452,7 @@ export const WorkHistoryMap = () => {
     setViewTransform(transform);
   };
 
-  const animateViewTransform = (targetTransform: ViewTransform) => {
+  const animateViewTransform = (targetTransform: ViewTransform, duration = ZOOM_ANIMATION_MS) => {
     cancelZoomAnimation();
 
     const startTransform = viewTransformRef.current;
@@ -461,7 +469,7 @@ export const WorkHistoryMap = () => {
     const easeOutCubic = (value: number) => 1 - Math.pow(1 - value, 3);
 
     const step = (time: number) => {
-      const progress = Math.min(1, (time - startTime) / ZOOM_ANIMATION_MS);
+      const progress = Math.min(1, (time - startTime) / duration);
       const easedProgress = easeOutCubic(progress);
       const nextTransform = {
         zoom: startTransform.zoom + (targetTransform.zoom - startTransform.zoom) * easedProgress,
@@ -542,7 +550,7 @@ export const WorkHistoryMap = () => {
               <text
                 className="map-city-label"
                 y={-6 / viewTransform.zoom}
-                fontSize={7 / viewTransform.zoom}
+                fontSize={6.2 / viewTransform.zoom}
               >
                 {city.name}
               </text>
@@ -576,29 +584,27 @@ export const WorkHistoryMap = () => {
               <g
                 key={`${tileKey}-${pin.id}`}
                 className={`history-marker history-marker--${pin.kind}${isActive ? ' history-marker--active' : ''}`}
+                data-pin-id={pin.id}
                 transform={`translate(${pin.x}, ${pin.y})`}
-                onClick={() =>
-                  setActivePin(prev =>
-                    prev?.id === pin.id ? null : pin
-                  )
-                }
+                onClick={event => event.stopPropagation()}
                 role="button"
                 tabIndex={0}
                 onKeyDown={event => {
                   if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault();
-                    setActivePin(prev =>
-                      prev?.id === pin.id ? null : pin
-                    );
+                    selectPinById(pin.id);
                   }
                 }}
               >
                 <circle className="history-marker-pulse" r="16" />
                 <circle className="history-marker-dot" r="7" />
                 {pin.jobs && pin.jobs.length > 1 && (
-                  <text className="history-marker-count" x="13" y="-10">
-                    {pin.jobs.length}
-                  </text>
+                  <g className="history-marker-count">
+                    <circle className="history-marker-count-core" r="5.2" />
+                    <text className="history-marker-count-label" y="0.4">
+                      {pin.jobs.length}
+                    </text>
+                  </g>
                 )}
               </g>
             );
@@ -608,7 +614,13 @@ export const WorkHistoryMap = () => {
     );
   };
 
-  const zoomAtSvgPoint = (anchorX: number, anchorY: number, nextZoom: number, animate = false) => {
+  const zoomAtSvgPoint = (
+    anchorX: number,
+    anchorY: number,
+    nextZoom: number,
+    animate = false,
+    duration = ZOOM_ANIMATION_MS
+  ) => {
     const currentTransform = viewTransformRef.current;
     const clampedNextZoom = clampZoom(nextZoom);
     if (clampedNextZoom === currentTransform.zoom) return;
@@ -623,7 +635,7 @@ export const WorkHistoryMap = () => {
     });
 
     if (animate) {
-      animateViewTransform(nextTransform);
+      animateViewTransform(nextTransform, duration);
       return;
     }
 
@@ -650,13 +662,24 @@ export const WorkHistoryMap = () => {
     const cursorX = cursorInSvg.x;
     const cursorY = cursorInSvg.y;
     const currentZoom = viewTransformRef.current.zoom;
-    const nextZoom = event.deltaY < 0 ? currentZoom * 1.12 : currentZoom / 1.12;
+    const normalizedDelta = Math.max(-3, Math.min(3, -event.deltaY / 100));
+    const zoomFactor = Math.pow(1.045, normalizedDelta);
+    const nextZoom = clampZoom(currentZoom * zoomFactor);
+
     zoomAtSvgPoint(cursorX, cursorY, nextZoom);
   };
 
   const handlePointerDown = (event: React.PointerEvent<SVGSVGElement>) => {
     cancelZoomAnimation();
     event.currentTarget.setPointerCapture(event.pointerId);
+    const pointerTarget = event.target as Element | null;
+    const markerTarget = pointerTarget?.closest?.('.history-marker') as SVGGElement | null;
+    pointerTapRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      pinId: markerTarget?.dataset.pinId ?? null,
+    };
+
     activePointersRef.current.set(event.pointerId, {
       x: event.clientX,
       y: event.clientY,
@@ -692,6 +715,14 @@ export const WorkHistoryMap = () => {
 
   const handlePointerMove = (event: React.PointerEvent<SVGSVGElement>) => {
     if (!activePointersRef.current.has(event.pointerId)) return;
+
+    const pointerTap = pointerTapRef.current;
+    if (
+      pointerTap &&
+      Math.hypot(event.clientX - pointerTap.x, event.clientY - pointerTap.y) > 6
+    ) {
+      pointerTapRef.current = null;
+    }
 
     activePointersRef.current.set(event.pointerId, {
       x: event.clientX,
@@ -737,6 +768,16 @@ export const WorkHistoryMap = () => {
   };
 
   const handlePointerUp = (event: React.PointerEvent<SVGSVGElement>) => {
+    const pointerTap = pointerTapRef.current;
+    if (
+      activePointersRef.current.size === 1 &&
+      pointerTap?.pinId &&
+      Math.hypot(event.clientX - pointerTap.x, event.clientY - pointerTap.y) <= 6
+    ) {
+      selectPinById(pointerTap.pinId);
+    }
+    pointerTapRef.current = null;
+
     activePointersRef.current.delete(event.pointerId);
 
     if (activePointersRef.current.size === 1) {
