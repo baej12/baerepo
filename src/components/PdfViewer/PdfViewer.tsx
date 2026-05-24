@@ -12,9 +12,14 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
 
     useEffect(() => {
         // Keep the PDF overlay modal-like so keyboard users can close it reliably.
+        const previousBodyOverflow = document.body.style.overflow;
+        const previousHtmlOverflow = document.documentElement.style.overflow;
+
         try {
             document.body.classList.add('pdf-open');
+            document.documentElement.classList.add('pdf-open');
             document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
         } catch (e) {}
 
         overlayRef.current?.focus();
@@ -45,7 +50,9 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
         return () => {
             try {
                 document.body.classList.remove('pdf-open');
-                document.body.style.overflow = '';
+                document.documentElement.classList.remove('pdf-open');
+                document.body.style.overflow = previousBodyOverflow;
+                document.documentElement.style.overflow = previousHtmlOverflow;
             } catch (e) {}
             window.removeEventListener('keydown', handleKey, true);
             document.removeEventListener('keydown', handleKey, true);

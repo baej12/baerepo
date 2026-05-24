@@ -641,6 +641,8 @@ section {
     padding: 1rem;
     background: rgba(3, 7, 18, 0.86);
     backdrop-filter: blur(8px);
+    overflow: hidden;
+    overscroll-behavior: contain;
 }
 
 .resume-captcha-modal {

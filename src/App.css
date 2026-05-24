@@ -50,6 +50,11 @@
   overflow: hidden;
 }
 
+body.pdf-open .App-route-shell,
+body.resume-captcha-open .App-route-shell {
+  overflow: hidden;
+}
+
 .App-route-shell.is-exiting {
   opacity: 0;
   transform: translateY(18px) scale(0.985);
