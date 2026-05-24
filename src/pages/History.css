@@ -1,3 +1,8 @@
+.history-page {
+  height: 100%;
+  overflow: hidden;
+}
+
 .history-page-shell {
   width: min(99vw, 2200px);
   margin: 0 auto;
@@ -10,7 +15,17 @@
 }
 
 @media (max-width: 768px) {
+  .history-page {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
   .history-page-shell {
+    width: 100%;
+    height: auto;
+    min-height: 100dvh;
     padding: 0.5rem 0.75rem 0.5rem;
+    overflow: visible;
   }
 }

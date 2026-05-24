@@ -19,7 +19,7 @@ export const CustomCursor = () => {
             mouseX = e.clientX;
             mouseY = e.clientY;
 
-            const target = e.target as HTMLElement | null;
+            const target = e.target instanceof Element ? e.target : null;
             const isOverMap = !!target?.closest('.us-history-map');
             if (isOverMap) {
                 cursor.classList.add('cursor-hidden');
@@ -76,7 +76,12 @@ export const CustomCursor = () => {
         };
 
         const handleMouseOver = (e: MouseEvent) => {
-            const target = e.target as HTMLElement;
+            const target = e.target instanceof Element ? e.target : null;
+            if (!target) {
+                cursor.classList.remove('hover');
+                return;
+            }
+
             if (target.closest('.us-history-map')) {
                 cursor.classList.add('cursor-hidden');
                 cursor.classList.remove('hover');
@@ -85,7 +90,7 @@ export const CustomCursor = () => {
 
             cursor.classList.remove('cursor-hidden');
 
-            if (target.tagName === 'A' || target.tagName === 'BUTTON' || 
+            if (target.tagName === 'A' || target.tagName === 'BUTTON' ||
                 target.closest('a') || target.closest('button') ||
                 target.classList.contains('job-item') ||
                 target.classList.contains('project-card') ||
