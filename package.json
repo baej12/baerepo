@@ -27,7 +27,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "generate:repo-stats": "node scripts/generate-repo-stats.mjs"
+    "generate:repo-stats": "node scripts/generate-repo-stats.mjs",
+    "generate:favicon": "node scripts/generate-favicon.mjs"
   },
   "eslintConfig": {
     "extends": [
@@ -53,6 +54,7 @@
     "@types/topojson-client": "^3.1.5",
     "@vitejs/plugin-react": "^6.0.1",
     "cross-env": "^10.1.0",
+    "sharp": "^0.32.6",
     "vite": "^8.0.8"
   }
 }
