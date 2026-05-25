@@ -250,7 +250,7 @@ body.resume-captcha-open .App-route-shell {
   }
 
   .App::after {
-    bottom: -2px;
+    display: none;
   }
 
   .App.history-route,
