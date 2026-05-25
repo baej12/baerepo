@@ -740,12 +740,20 @@ const Mainpage: React.FC = () => {
 
                     {hasTurnstileSiteKey ? (
                         <div className="resume-captcha-widget">
-                            {!isCaptchaWidgetReady && (
+                            {isResumeRequestPending ? (
+                                <div className="resume-captcha-loading resume-captcha-loading--pending" aria-live="polite">
+                                    <span className="resume-captcha-loading-ring" aria-hidden="true" />
+                                    Loading resume...
+                                </div>
+                            ) : !isCaptchaWidgetReady && (
                                 <div className="resume-captcha-loading" aria-live="polite">
                                     Loading verification...
                                 </div>
                             )}
-                            <div ref={turnstileContainerRef} />
+                            <div
+                                ref={turnstileContainerRef}
+                                className={isResumeRequestPending ? 'resume-captcha-widget-hidden' : undefined}
+                            />
                         </div>
                     ) : (
                         <p className="resume-captcha-error">
