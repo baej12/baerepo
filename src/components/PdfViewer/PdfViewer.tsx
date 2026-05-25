@@ -6,6 +6,32 @@ interface PdfViewerProps {
     onClose: () => void;
 }
 
+const captureScrollPosition = () => {
+    const routeShell = document.querySelector('.App-route-shell') as HTMLElement | null;
+
+    return {
+        windowTop: window.scrollY,
+        windowLeft: window.scrollX,
+        bodyTop: document.body.scrollTop,
+        bodyLeft: document.body.scrollLeft,
+        documentTop: document.documentElement.scrollTop,
+        documentLeft: document.documentElement.scrollLeft,
+        routeShellTop: routeShell?.scrollTop || 0,
+        routeShellLeft: routeShell?.scrollLeft || 0,
+    };
+};
+
+const restoreScrollPosition = (position: ReturnType<typeof captureScrollPosition>) => {
+    const routeShell = document.querySelector('.App-route-shell') as HTMLElement | null;
+    const top = Math.max(position.windowTop, position.bodyTop, position.documentTop, position.routeShellTop);
+    const left = Math.max(position.windowLeft, position.bodyLeft, position.documentLeft, position.routeShellLeft);
+
+    window.scrollTo({ top: position.windowTop || top, left: position.windowLeft || left, behavior: 'auto' });
+    document.body.scrollTo({ top: position.bodyTop || top, left: position.bodyLeft || left, behavior: 'auto' });
+    document.documentElement.scrollTo({ top: position.documentTop || top, left: position.documentLeft || left, behavior: 'auto' });
+    routeShell?.scrollTo({ top: position.routeShellTop || top, left: position.routeShellLeft || left, behavior: 'auto' });
+};
+
 export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
     const overlayRef = useRef<HTMLDivElement>(null);
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -24,6 +50,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
 
     useEffect(() => {
         // Keep the PDF overlay modal-like so keyboard users can close it reliably.
+        const scrollPosition = captureScrollPosition();
         const previousBodyOverflow = document.body.style.overflow;
         const previousHtmlOverflow = document.documentElement.style.overflow;
 
@@ -32,6 +59,8 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
             document.documentElement.classList.add('pdf-open');
             document.body.style.overflow = 'hidden';
             document.documentElement.style.overflow = 'hidden';
+            restoreScrollPosition(scrollPosition);
+            requestAnimationFrame(() => restoreScrollPosition(scrollPosition));
         } catch (e) {}
 
         overlayRef.current?.focus();
@@ -65,6 +94,8 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, onClose }) => {
                 document.documentElement.classList.remove('pdf-open');
                 document.body.style.overflow = previousBodyOverflow;
                 document.documentElement.style.overflow = previousHtmlOverflow;
+                restoreScrollPosition(scrollPosition);
+                requestAnimationFrame(() => restoreScrollPosition(scrollPosition));
             } catch (e) {}
             window.removeEventListener('keydown', handleKey, true);
             document.removeEventListener('keydown', handleKey, true);
