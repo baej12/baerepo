@@ -468,46 +468,48 @@ section {
     text-align: left;
 }
 
-/* Skills/Tags */
+/* Skills/Tools */
 .job-skill {
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    border-radius: 20px;
-    background: rgba(59, 130, 246, 0.1);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
     font-size: var(--font-size-xs);
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    padding: var(--spacing-xs) var(--spacing-md);
-    margin-right: var(--spacing-xs);
-    margin-bottom: var(--spacing-xs);
+    padding: 0;
+    margin: 0;
     cursor: default;
-    user-select: none;
-    color: var(--color-accent);
+    user-select: text;
+    color: rgba(148, 163, 184, 0.95);
     font-weight: 500;
-    transition: all 200ms;
+    line-height: 1.55;
 }
 
-.job-skill:hover {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.5);
-    transform: translateY(-1px);
+.job-skill::after {
+    content: '/';
+    margin: 0 0.45rem;
+    color: rgba(148, 163, 184, 0.42);
 }
 
-/* Option 4: Outlined pills (minimal) */
+.job-skill:last-child::after {
+    content: '';
+    margin: 0;
+}
+
+/* Keep the minimal class as a quiet text treatment for shared project/experience metadata. */
 .job-skill.minimal {
-    border: 1.5px solid rgba(139, 92, 246, 0.5);
-    border-radius: 24px;
+    border: 0;
+    border-radius: 0;
     background: transparent;
-    padding: 6px 14px;
-    color: var(--color-text-secondary);
+    padding: 0;
+    color: rgba(203, 213, 225, 0.82);
     font-weight: 500;
-    transition: all 200ms ease;
+    transition: color 180ms ease;
 }
 
 .job-skill.minimal:hover {
-    border-color: var(--color-secondary);
-    color: var(--color-secondary);
-    background: rgba(139, 92, 246, 0.08);
+    color: rgba(226, 232, 240, 0.96);
     transform: none;
 }
 
@@ -581,6 +583,37 @@ section {
     justify-content: flex-start;
     align-items: center;
     gap: 0;
+    margin-top: var(--spacing-md);
+    color: rgba(148, 163, 184, 0.95);
+}
+
+.job-skill-list::before {
+    content: 'Tools';
+    margin-right: 0.65rem;
+    color: rgba(125, 211, 252, 0.72);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+    .job-skill-list {
+        align-items: flex-start;
+        row-gap: 0.12rem;
+        margin-top: var(--spacing-sm);
+        line-height: 1.55;
+    }
+
+    .job-skill-list::before {
+        flex: 0 0 100%;
+        margin-right: 0;
+        margin-bottom: 0.08rem;
+    }
+
+    .job-skill::after {
+        margin: 0 0.38rem;
+    }
 }
 
 /* Resume CTA */
