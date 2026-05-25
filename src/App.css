@@ -222,13 +222,15 @@ body.resume-captcha-open .App-route-shell {
 @media (max-width: 768px) {
   .App {
     background-attachment: scroll;
-    height: 100dvh;
+    height: auto;
     min-height: 100dvh;
+    overflow: visible;
   }
 
   .App-route-shell {
-    height: 100dvh;
+    height: auto;
     min-height: 100dvh;
+    overflow: visible;
     scrollbar-gutter: stable both-edges;
   }
 

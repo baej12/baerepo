@@ -90,27 +90,133 @@ const getSectionReferenceElement = (target: HTMLElement) => (
     || target
 );
 
-const scrollToSectionReference = (referenceEl: HTMLElement, behavior: ScrollBehavior) => {
-    if (!isMobileViewport()) {
-        referenceEl.scrollIntoView({ behavior, block: 'start' });
-        return;
-    }
+const isScrollableElement = (element: HTMLElement | null) => {
+    if (!element) return false;
 
-    const routeShell = getRouteScrollContainer();
-    if (!routeShell) {
-        referenceEl.scrollIntoView({ behavior, block: 'start' });
-        return;
-    }
+    const style = window.getComputedStyle(element);
+    if (style.overflowY === 'hidden' || style.overflowY === 'clip') return false;
 
-    const shellTop = routeShell.getBoundingClientRect().top;
-    const currentTop = routeShell.scrollTop;
-    const targetTop = currentTop + referenceEl.getBoundingClientRect().top - shellTop - 12;
-
-    routeShell.scrollTo({
-        top: Math.max(0, targetTop),
-        behavior,
-    });
+    return element.scrollHeight > element.clientHeight + 1;
 };
+
+const getActiveScrollContainer = () => {
+    const routeShell = getRouteScrollContainer();
+    if (isScrollableElement(routeShell)) {
+        return routeShell;
+    }
+
+    const scrollingElement = document.scrollingElement as HTMLElement | null;
+    if (isScrollableElement(scrollingElement)) {
+        return scrollingElement;
+    }
+
+    if (isScrollableElement(document.documentElement)) {
+        return document.documentElement;
+    }
+
+    if (isScrollableElement(document.body)) {
+        return document.body;
+    }
+
+    return null;
+};
+
+type PageScrollPosition = {
+    top: number;
+    left: number;
+    windowTop: number;
+    windowLeft: number;
+    bodyTop: number;
+    bodyLeft: number;
+    documentTop: number;
+    documentLeft: number;
+    routeShellTop: number;
+    routeShellLeft: number;
+};
+
+const capturePageScrollPosition = (): PageScrollPosition => {
+    const routeShell = getRouteScrollContainer();
+    const windowTop = window.scrollY;
+    const windowLeft = window.scrollX;
+    const bodyTop = document.body.scrollTop;
+    const bodyLeft = document.body.scrollLeft;
+    const documentTop = document.documentElement.scrollTop;
+    const documentLeft = document.documentElement.scrollLeft;
+    const routeShellTop = routeShell?.scrollTop || 0;
+    const routeShellLeft = routeShell?.scrollLeft || 0;
+
+    return {
+        top: Math.max(windowTop, bodyTop, documentTop, routeShellTop),
+        left: Math.max(windowLeft, bodyLeft, documentLeft, routeShellLeft),
+        windowTop,
+        windowLeft,
+        bodyTop,
+        bodyLeft,
+        documentTop,
+        documentLeft,
+        routeShellTop,
+        routeShellLeft,
+    };
+};
+
+const restorePageScrollPosition = (position: PageScrollPosition) => {
+    const routeShell = getRouteScrollContainer();
+
+    window.scrollTo({ top: position.windowTop || position.top, left: position.windowLeft || position.left, behavior: 'auto' });
+    document.body.scrollTo({ top: position.bodyTop || position.top, left: position.bodyLeft || position.left, behavior: 'auto' });
+    document.documentElement.scrollTo({ top: position.documentTop || position.top, left: position.documentLeft || position.left, behavior: 'auto' });
+    routeShell?.scrollTo({ top: position.routeShellTop || position.top, left: position.routeShellLeft || position.left, behavior: 'auto' });
+};
+
+const getScrollOffset = () => {
+    if (isMobileViewport()) {
+        return 12;
+    }
+
+    const header = document.querySelector('.header-name') as HTMLElement | null;
+    return header ? header.getBoundingClientRect().top : 0;
+};
+
+const scrollToSectionReference = (referenceEl: HTMLElement, behavior: ScrollBehavior) => {
+    const offset = getScrollOffset();
+    const scrollContainer = getActiveScrollContainer();
+
+    if (!scrollContainer) {
+        referenceEl.scrollIntoView({ behavior, block: 'start' });
+        return;
+    }
+
+    const isDocumentScroller = scrollContainer === document.documentElement || scrollContainer === document.body || scrollContainer === document.scrollingElement;
+    const currentTop = isDocumentScroller
+        ? (scrollContainer.scrollTop || document.body.scrollTop || document.documentElement.scrollTop || window.scrollY)
+        : scrollContainer.scrollTop;
+    const containerTop = isDocumentScroller ? 0 : scrollContainer.getBoundingClientRect().top;
+    const targetTop = currentTop + referenceEl.getBoundingClientRect().top - containerTop - offset;
+    const top = Math.max(0, targetTop);
+
+    if (isDocumentScroller) {
+        window.scrollTo({ top, behavior });
+        scrollContainer.scrollTo({ top, behavior });
+        document.body.scrollTo({ top, behavior });
+        document.documentElement.scrollTo({ top, behavior });
+        return;
+    }
+
+    scrollContainer.scrollTo({ top, behavior });
+};
+
+const scrollToSectionId = (sectionId: string, behavior: ScrollBehavior = 'smooth') => {
+    const target = document.getElementById(sectionId);
+    if (!target) return;
+
+    scrollToSectionReference(getSectionReferenceElement(target), behavior);
+};
+
+const DEFAULT_MOBILE_SECTIONS = [
+    { id: 'about', label: 'About' },
+    { id: 'experience', label: 'Experience' },
+    { id: 'projects', label: 'Projects' },
+];
 
 const Mainpage: React.FC = () => {
     const [activeSection, setActiveSection] = useState<string>('about');
@@ -119,6 +225,7 @@ const Mainpage: React.FC = () => {
     const manualScrollTargetRef = useRef<string | null>(null);
     const manualScrollTimerRef = useRef<number | null>(null);
     const [sections, setSections] = useState<{ id: string; label: string }[]>([]);
+    const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
     const [showPdfViewer, setShowPdfViewer] = useState<boolean>(false);
     const [showResumeCaptcha, setShowResumeCaptcha] = useState<boolean>(false);
     const [resumeViewerUrl, setResumeViewerUrl] = useState<string>('');
@@ -128,7 +235,7 @@ const Mainpage: React.FC = () => {
     const [isResumeRequestPending, setIsResumeRequestPending] = useState<boolean>(false);
     const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
     const turnstileWidgetIdRef = useRef<string | null>(null);
-    const resumeScrollPositionRef = useRef<{ top: number; left: number } | null>(null);
+    const resumeScrollPositionRef = useRef<PageScrollPosition | null>(null);
     
     const jobs: Job[] = jobsData;
     const projects: Project[] = projectsData;
@@ -303,15 +410,11 @@ const Mainpage: React.FC = () => {
 
     useEffect(() => {
         if (showResumeCaptcha) {
-            const routeShell = document.querySelector('.App-route-shell') as HTMLElement | null;
             const previousBodyOverflow = document.body.style.overflow;
             const previousHtmlOverflow = document.documentElement.style.overflow;
 
-            if (!resumeScrollPositionRef.current && routeShell) {
-                resumeScrollPositionRef.current = {
-                    top: routeShell.scrollTop,
-                    left: routeShell.scrollLeft,
-                };
+            if (!resumeScrollPositionRef.current) {
+                resumeScrollPositionRef.current = capturePageScrollPosition();
             }
 
             try {
@@ -319,6 +422,12 @@ const Mainpage: React.FC = () => {
                 document.documentElement.classList.add('resume-captcha-open');
                 document.body.style.overflow = 'hidden';
                 document.documentElement.style.overflow = 'hidden';
+                restorePageScrollPosition(resumeScrollPositionRef.current);
+                requestAnimationFrame(() => {
+                    if (resumeScrollPositionRef.current) {
+                        restorePageScrollPosition(resumeScrollPositionRef.current);
+                    }
+                });
             } catch (e) {}
 
             return () => {
@@ -336,13 +445,10 @@ const Mainpage: React.FC = () => {
 
     useEffect(() => {
         if (showPdfViewer) {
-            const routeShell = document.querySelector('.App-route-shell') as HTMLElement | null;
-
-            if (!resumeScrollPositionRef.current && routeShell) {
-                resumeScrollPositionRef.current = {
-                    top: routeShell.scrollTop,
-                    left: routeShell.scrollLeft,
-                };
+            if (!resumeScrollPositionRef.current) {
+                resumeScrollPositionRef.current = capturePageScrollPosition();
+            } else {
+                restorePageScrollPosition(resumeScrollPositionRef.current);
             }
         }
     }, [showPdfViewer]);
@@ -356,13 +462,7 @@ const Mainpage: React.FC = () => {
         }
 
         requestAnimationFrame(() => {
-            const routeShell = document.querySelector('.App-route-shell') as HTMLElement | null;
-            if (routeShell) {
-                routeShell.scrollTo(savedPosition);
-                return;
-            }
-
-            window.scrollTo(savedPosition);
+            restorePageScrollPosition(savedPosition);
         });
     };
 
@@ -670,9 +770,53 @@ const Mainpage: React.FC = () => {
         setActiveSection(sectionId);
 
         scrollToSectionReference(referenceEl, 'smooth');
+        setIsMobileNavOpen(false);
         const { pathname, search } = window.location;
         window.history.replaceState(null, '', `${pathname}${search}${href}`);
     };
+
+    const handleMobileSectionClick = (sectionId: string) => {
+        activeSectionRef.current = sectionId;
+        setActiveSection(sectionId);
+        setIsMobileNavOpen(false);
+        scrollToSectionId(sectionId, 'smooth');
+
+        window.requestAnimationFrame(() => {
+            scrollToSectionId(sectionId, 'smooth');
+        });
+
+        const { pathname, search } = window.location;
+        window.history.replaceState(null, '', `${pathname}${search}#${sectionId}`);
+    };
+
+    const mobileSectionNav = (
+        <nav className={`mobile-section-nav${isMobileNavOpen ? ' is-open' : ''}`} aria-label="Mobile section navigation">
+            <button
+                type="button"
+                className="mobile-section-nav-toggle"
+                aria-expanded={isMobileNavOpen}
+                aria-controls="mobile-section-nav-panel"
+                aria-label={isMobileNavOpen ? 'Close sections navigation' : 'Open sections navigation'}
+                onClick={() => setIsMobileNavOpen(isOpen => !isOpen)}
+            >
+                <span className="mobile-section-nav-toggle-icon" aria-hidden="true" />
+                <span className="mobile-section-nav-toggle-label">Sections</span>
+            </button>
+            <div className="mobile-section-nav-panel" id="mobile-section-nav-panel">
+                {(sections.length > 0 ? sections : DEFAULT_MOBILE_SECTIONS).map(section => (
+                    <button
+                        type="button"
+                        key={section.id}
+                        className={activeSection === section.id ? 'active' : ''}
+                        onClick={() => handleMobileSectionClick(section.id)}
+                    >
+                        {section.label}
+                    </button>
+                ))}
+                <Link to="/history" onClick={() => setIsMobileNavOpen(false)}>History</Link>
+            </div>
+        </nav>
+    );
 
     return (
         <div className="mainpage">
@@ -740,12 +884,20 @@ const Mainpage: React.FC = () => {
 
                     {hasTurnstileSiteKey ? (
                         <div className="resume-captcha-widget">
-                            {!isCaptchaWidgetReady && (
+                            {isResumeRequestPending ? (
+                                <div className="resume-captcha-loading resume-captcha-loading--pending" aria-live="polite">
+                                    <span className="resume-captcha-loading-ring" aria-hidden="true" />
+                                    Loading resume...
+                                </div>
+                            ) : !isCaptchaWidgetReady && (
                                 <div className="resume-captcha-loading" aria-live="polite">
                                     Loading verification...
                                 </div>
                             )}
-                            <div ref={turnstileContainerRef} />
+                            <div
+                                ref={turnstileContainerRef}
+                                className={isResumeRequestPending ? 'resume-captcha-widget-hidden' : undefined}
+                            />
                         </div>
                     ) : (
                         <p className="resume-captcha-error">
@@ -779,7 +931,7 @@ const Mainpage: React.FC = () => {
                 </div>
             </div>
         ), document.body)}
-        {showPdfViewer && (
+        {showPdfViewer && createPortal((
             <PdfViewer 
                 url={resumeViewerUrl}
                 onClose={() => {
@@ -788,7 +940,8 @@ const Mainpage: React.FC = () => {
                     restoreResumeScrollPosition();
                 }}
             />
-        )}
+        ), document.body)}
+        {createPortal(mobileSectionNav, document.body)}
         </div>
     );
 };
