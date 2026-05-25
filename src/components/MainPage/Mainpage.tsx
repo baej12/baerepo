@@ -4,7 +4,7 @@ import { AboutSection } from '../AboutSection/AboutSection';
 import { ExperienceSection } from '../ExperienceSection/ExperienceSection';
 import { ProjectsSection } from '../ProjectsSection/ProjectsSection';
 import React, { useEffect, useState, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { createPortal, flushSync } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Job, Project, AboutContent, Profile } from '../../types/content';
 import jobsData from '../../data/jobs';
@@ -341,15 +341,37 @@ const Mainpage: React.FC = () => {
 
     // Listen for custom event to open resume
     useEffect(() => {
-        const handleOpenResume = () => {
-            setCaptchaToken('');
-            setResumeRequestError('');
-            setIsCaptchaWidgetReady(false);
-            setShowResumeCaptcha(true);
+        const warmResumeCaptcha = () => {
+            if (hasTurnstileSiteKey) {
+                loadTurnstileScript().catch(() => {});
+            }
         };
+
+        const handleOpenResume = () => {
+            if (!resumeScrollPositionRef.current) {
+                resumeScrollPositionRef.current = capturePageScrollPosition();
+            }
+
+            flushSync(() => {
+                setCaptchaToken('');
+                setResumeRequestError('');
+                setIsCaptchaWidgetReady(false);
+                setIsResumeRequestPending(false);
+                setShowPdfViewer(false);
+                setIsMobileNavOpen(false);
+                setShowResumeCaptcha(true);
+            });
+
+            warmResumeCaptcha();
+        };
+
+        window.addEventListener('warmResumeCaptcha', warmResumeCaptcha as EventListener);
         window.addEventListener('openResume', handleOpenResume as EventListener);
-        return () => window.removeEventListener('openResume', handleOpenResume as EventListener);
-    }, []);
+        return () => {
+            window.removeEventListener('warmResumeCaptcha', warmResumeCaptcha as EventListener);
+            window.removeEventListener('openResume', handleOpenResume as EventListener);
+        };
+    }, [hasTurnstileSiteKey]);
 
     useEffect(() => {
         if (!showResumeCaptcha || !hasTurnstileSiteKey) {
@@ -941,7 +963,7 @@ const Mainpage: React.FC = () => {
                 }}
             />
         ), document.body)}
-        {createPortal(mobileSectionNav, document.body)}
+        {!showResumeCaptcha && !showPdfViewer && createPortal(mobileSectionNav, document.body)}
         </div>
     );
 };
