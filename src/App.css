@@ -189,7 +189,10 @@ body.resume-captcha-open .App-route-shell {
 /* Fade mask at top and bottom edges */
 .App::after {
   content: '';
-  position: fixed;
+  /* Make the top/bottom fade part of the .App stacking context so it
+     scales with content height and doesn't stay fixed to the viewport.
+     This avoids color disconnects when mobile browser chrome resizes. */
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
