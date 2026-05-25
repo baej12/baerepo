@@ -66,10 +66,10 @@ const paletteForSeason = (season: Season) => {
   switch (season) {
     case 'spring':
       return [
-        { primary: '#f4e1f5', secondary: '#d8f5e4' },
-        { primary: '#e4e9ff', secondary: '#dff7e6' },
-        { primary: '#fde7ef', secondary: '#e6f0ff' },
-        { primary: '#e9f7ef', secondary: '#e6e0ff' },
+        { primary: '#f2a7c6', secondary: '#7dd3a8' },
+        { primary: '#d9b8ff', secondary: '#8bd7b5' },
+        { primary: '#f4b7a7', secondary: '#9ee6be' },
+        { primary: '#f0c6dd', secondary: '#a7e5c1' },
       ];
     case 'summer':
       return [
@@ -147,7 +147,10 @@ const buildHolidaySprites = (season: Season): HolidaySprite[] => {
 
 export const SeasonalBackdrop: React.FC = () => {
   const season = detectSeason();
-  const particles = useMemo(() => buildParticles(48, season), [season]);
+  const particles = useMemo(() => {
+    const isCompactViewport = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+    return buildParticles(isCompactViewport ? 24 : 42, season);
+  }, [season]);
   const holidaySprites = useMemo(() => buildHolidaySprites(season), [season]);
 
   return (

@@ -23,6 +23,7 @@
   background: var(--particle-primary, var(--pixel-primary, #dbeafe));
   image-rendering: pixelated;
   opacity: 0;
+  --particle-peak-opacity: 0.58;
   animation-name: pixelFall;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
@@ -37,7 +38,7 @@
     transform: translate3d(var(--start-x, 0vw), -10%, 0) scale(var(--scale, 1)) rotate(var(--rot, 0deg));
   }
   10% {
-    opacity: 0.9;
+    opacity: var(--particle-peak-opacity, 0.58);
   }
   100% {
     opacity: 0;
@@ -61,17 +62,15 @@
 
 /* Spring: soft petals */
 .pixel-particle--spring {
-  border-radius: 1px;
+  width: 5px;
+  height: 3px;
+  border-radius: 999px 999px 2px 999px;
+  --particle-peak-opacity: 0.44;
   box-shadow:
     0 0 0 1px var(--particle-primary, var(--pixel-primary)),
-    -4px 0 0 0 var(--particle-secondary, var(--pixel-secondary)),
-    4px 0 0 0 var(--particle-secondary, var(--pixel-secondary)),
-    0 -4px 0 0 var(--particle-secondary, var(--pixel-secondary)),
-    0 4px 0 0 var(--particle-secondary, var(--pixel-secondary)),
-    -4px -4px 0 0 var(--particle-primary, var(--pixel-primary)),
-    4px -4px 0 0 var(--particle-primary, var(--pixel-primary)),
-    -4px 4px 0 0 var(--particle-primary, var(--pixel-primary)),
-    4px 4px 0 0 var(--particle-primary, var(--pixel-primary));
+    4px 1px 0 0 var(--particle-secondary, var(--pixel-secondary)),
+    -3px 2px 0 0 var(--particle-secondary, var(--pixel-secondary));
+  filter: drop-shadow(0 0 5px rgba(125, 211, 168, 0.16));
 }
 
 /* Summer: sparkly stars */
@@ -100,12 +99,14 @@
     8px 0 0 0 var(--particle-secondary, var(--pixel-secondary)),
     -8px 0 0 0 var(--particle-secondary, var(--pixel-secondary));
   filter:
-    drop-shadow(0 0 10px rgba(255, 214, 102, 0.3))
-    drop-shadow(0 0 16px rgba(255, 214, 102, 0.2));
+    drop-shadow(0 0 8px rgba(255, 214, 102, 0.22))
+    drop-shadow(0 0 12px rgba(255, 214, 102, 0.14));
+  --particle-peak-opacity: 0.48;
 }
 
 /* Fall: angled leaves */
 .pixel-particle--fall {
+  --particle-peak-opacity: 0.5;
   box-shadow:
     0 0 0 1px var(--particle-primary, var(--pixel-primary)),
     4px 0 0 0 var(--particle-primary, var(--pixel-primary)),
@@ -130,12 +131,12 @@
 }
 
 .seasonal-backdrop--spring {
-  --pixel-primary: #e4e9ff;
-  --pixel-secondary: #d8f5e4;
-  --pixel-glow: rgba(212, 221, 244, 0.35);
+  --pixel-primary: #f2a7c6;
+  --pixel-secondary: #7dd3a8;
+  --pixel-glow: rgba(125, 211, 168, 0.16);
   background:
-    radial-gradient(circle at 18% 25%, rgba(212, 221, 244, 0.12) 0, transparent 38%),
-    radial-gradient(circle at 82% 70%, rgba(200, 232, 216, 0.08) 0, transparent 42%);
+    radial-gradient(circle at 18% 25%, rgba(242, 167, 198, 0.07) 0, transparent 38%),
+    radial-gradient(circle at 82% 70%, rgba(125, 211, 168, 0.06) 0, transparent 42%);
 }
 
 .seasonal-backdrop--summer {
@@ -163,10 +164,10 @@
     transform: translate3d(var(--start-x, 0vw), 0vh, 0) scale(calc(var(--scale, 1) * 0.92)) rotate(var(--angle, 0deg));
   }
   20% {
-    opacity: 0.8;
+    opacity: calc(var(--particle-peak-opacity, 0.58) * 0.82);
   }
   55% {
-    opacity: 1;
+    opacity: var(--particle-peak-opacity, 0.58);
     transform: translate3d(calc(var(--start-x, 0vw) + var(--drift, 0vw)), -60vh, 0) scale(calc(var(--scale, 1) * 1.08)) rotate(var(--angle, 0deg));
   }
   100% {
@@ -428,5 +429,39 @@
   }
   .holiday-sprite {
     animation: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .seasonal-backdrop {
+    mix-blend-mode: screen;
+    opacity: 0.62;
+  }
+
+  .seasonal-backdrop--spring {
+    opacity: 0.5;
+  }
+
+  .pixel-particle {
+    --particle-peak-opacity: 0.28;
+    filter: drop-shadow(0 0 3px var(--pixel-glow, rgba(203, 213, 225, 0.18)));
+  }
+
+  .pixel-particle--winter {
+    --particle-peak-opacity: 0.32;
+  }
+
+  .pixel-particle--spring {
+    --particle-peak-opacity: 0.24;
+    filter: drop-shadow(0 0 3px rgba(125, 211, 168, 0.1));
+  }
+
+  .pixel-particle--summer-sun,
+  .pixel-particle--fall {
+    --particle-peak-opacity: 0.3;
+  }
+
+  .pixel-particle:nth-child(n + 25) {
+    display: none;
   }
 }

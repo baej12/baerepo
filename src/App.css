@@ -220,6 +220,21 @@ body.resume-captcha-open .App-route-shell {
 
 /* Avoid fixed background on mobile for performance */
 @media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    height: auto;
+    min-height: 100%;
+  }
+
+  html {
+    overflow-y: auto;
+  }
+
+  body {
+    overflow-y: visible;
+  }
+
   .App {
     background-attachment: scroll;
     height: auto;

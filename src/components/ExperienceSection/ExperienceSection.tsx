@@ -6,6 +6,9 @@ interface ExperienceSectionProps {
 }
 
 export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ jobs }) => {
+    const warmResumeCaptcha = () => window.dispatchEvent(new CustomEvent('warmResumeCaptcha'));
+    const openResume = () => window.dispatchEvent(new CustomEvent('openResume'));
+
     return (
         <section id="experience" className="experience-section" aria-labelledby="experience-heading">
             <h2 className="section-heading" id="experience-heading">Experience</h2>
@@ -35,7 +38,14 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({ jobs }) =>
                     </article>
                 ))}
                 <div className="resume-cta">
-                    <button className="resume-link" onClick={() => window.dispatchEvent(new CustomEvent('openResume'))}>
+                    <button
+                        className="resume-link"
+                        onClick={openResume}
+                        onFocus={warmResumeCaptcha}
+                        onMouseEnter={warmResumeCaptcha}
+                        onPointerDown={warmResumeCaptcha}
+                        onTouchStart={warmResumeCaptcha}
+                    >
                         View Full Resume <span aria-hidden="true">&rarr;</span>
                     </button>
                 </div>
