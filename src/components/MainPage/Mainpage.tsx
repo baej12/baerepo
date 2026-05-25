@@ -212,6 +212,21 @@ const scrollToSectionId = (sectionId: string, behavior: ScrollBehavior = 'smooth
     scrollToSectionReference(getSectionReferenceElement(target), behavior);
 };
 
+const scrollMainPageToTop = (behavior: ScrollBehavior = 'auto') => {
+    const routeShell = getRouteScrollContainer();
+    routeShell?.scrollTo({ top: 0, left: 0, behavior });
+    window.scrollTo({ top: 0, left: 0, behavior });
+    document.body.scrollTo({ top: 0, left: 0, behavior });
+    document.documentElement.scrollTo({ top: 0, left: 0, behavior });
+};
+
+const forceMainPageTop = () => {
+    scrollMainPageToTop('auto');
+    [0, 50, 150, 300].forEach(delay => {
+        window.setTimeout(() => scrollMainPageToTop('auto'), delay);
+    });
+};
+
 const DEFAULT_MOBILE_SECTIONS = [
     { id: 'about', label: 'About' },
     { id: 'experience', label: 'Experience' },
@@ -547,6 +562,12 @@ const Mainpage: React.FC = () => {
         const scrollToHashSection = (hash?: string) => {
             const h = (hash !== undefined ? hash : window.location.hash) || '';
             if (!h) return;
+
+            if (h === '#about') {
+                forceMainPageTop();
+                return;
+            }
+
             const target = document.querySelector(h) as HTMLElement | null;
             if (!target) return;
             const referenceEl = getSectionReferenceElement(target);
@@ -555,15 +576,6 @@ const Mainpage: React.FC = () => {
             window.setTimeout(() => {
                 // Use instant (auto) behavior on load so the browser doesn't animate from top-of-page to the hash position
                 scrollToSectionReference(referenceEl, 'auto');
-
-                // Final precise correction: align reference top with header top if header exists
-                const header = document.querySelector('.header-name') as HTMLElement | null;
-                if (header && !isMobileViewport()) {
-                    const delta = referenceEl.getBoundingClientRect().top - header.getBoundingClientRect().top;
-                    if (Math.abs(delta) > 1) {
-                        window.scrollBy({ top: -delta, behavior: 'auto' });
-                    }
-                }
             }, 60);
         };
 
@@ -791,7 +803,12 @@ const Mainpage: React.FC = () => {
         activeSectionRef.current = sectionId;
         setActiveSection(sectionId);
 
-        scrollToSectionReference(referenceEl, 'smooth');
+        if (sectionId === 'about') {
+            scrollMainPageToTop('smooth');
+            window.setTimeout(() => scrollMainPageToTop('auto'), 350);
+        } else {
+            scrollToSectionReference(referenceEl, 'smooth');
+        }
         setIsMobileNavOpen(false);
         const { pathname, search } = window.location;
         window.history.replaceState(null, '', `${pathname}${search}${href}`);

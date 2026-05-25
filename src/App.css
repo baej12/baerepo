@@ -44,9 +44,9 @@
 .App-route-shell {
   position: relative;
   width: 100%;
-  height: auto;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   opacity: 1;
@@ -191,24 +191,10 @@ body.resume-captcha-open .App-route-shell {
   }
 }
 
-/* Fade mask at top and bottom edges */
+/* Top/bottom fade mask intentionally disabled; browser chrome handles its own edge color. */
 .App::after {
   content: '';
-  /* Make the top/bottom fade part of the .App stacking context so it
-     scales with content height and doesn't stay fixed to the viewport.
-     This avoids color disconnects when mobile browser chrome resizes. */
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    linear-gradient(to bottom, 
-      #0f172a 0%, 
-      transparent 4rem,
-      transparent calc(100% - 4rem),
-      #0f172a 100%
-    );
+  display: none;
   pointer-events: none;
   z-index: 10;
 }
