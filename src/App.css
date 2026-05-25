@@ -246,6 +246,8 @@ body.resume-captcha-open .App-route-shell {
     min-height: 100dvh;
     overflow: visible;
     scrollbar-gutter: stable both-edges;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .App::after {
