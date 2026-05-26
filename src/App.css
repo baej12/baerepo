@@ -249,7 +249,12 @@ body.resume-captcha-open .App-route-shell {
   }
 
   .App::after {
-    display: none;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent calc(100% - calc(env(safe-area-inset-bottom) + 56px)),
+      #0f172a 100%
+    );
   }
 
   .App.history-route,
