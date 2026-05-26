@@ -5,7 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  background: #0f172a;
+  overscroll-behavior: none;
 }
 
 code {
@@ -16,10 +17,10 @@ code {
 html {
   scroll-behavior: smooth;
   background: #0f172a;
+  overscroll-behavior: none;
 }
 
 #root {
   min-height: 100vh;
   min-height: 100dvh;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
 }
