@@ -434,6 +434,8 @@ const Mainpage: React.FC = () => {
         if (showResumeCaptcha) {
             const previousBodyOverflow = document.body.style.overflow;
             const previousHtmlOverflow = document.documentElement.style.overflow;
+            const themeColorMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+            const previousThemeColor = themeColorMeta?.getAttribute('content') ?? null;
 
             if (!resumeScrollPositionRef.current) {
                 resumeScrollPositionRef.current = capturePageScrollPosition();
@@ -444,6 +446,7 @@ const Mainpage: React.FC = () => {
                 document.documentElement.classList.add('resume-captcha-open');
                 document.body.style.overflow = 'hidden';
                 document.documentElement.style.overflow = 'hidden';
+                themeColorMeta?.setAttribute('content', '#030712');
                 restorePageScrollPosition(resumeScrollPositionRef.current);
                 requestAnimationFrame(() => {
                     if (resumeScrollPositionRef.current) {
@@ -458,6 +461,9 @@ const Mainpage: React.FC = () => {
                     document.documentElement.classList.remove('resume-captcha-open');
                     document.body.style.overflow = previousBodyOverflow;
                     document.documentElement.style.overflow = previousHtmlOverflow;
+                    if (themeColorMeta && previousThemeColor) {
+                        themeColorMeta.setAttribute('content', previousThemeColor);
+                    }
                 } catch (e) {}
             };
         }
