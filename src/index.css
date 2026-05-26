@@ -5,6 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #0f172a;
+  overscroll-behavior: none;
 }
 
 code {
@@ -15,6 +17,7 @@ code {
 html {
   scroll-behavior: smooth;
   background: #0f172a;
+  overscroll-behavior: none;
 }
 
 #root {

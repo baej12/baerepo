@@ -244,6 +244,7 @@ body.resume-captcha-open .App-route-shell {
   .App-route-shell {
     height: auto;
     min-height: 100dvh;
+    box-sizing: border-box;
     overflow: visible;
     scrollbar-gutter: stable both-edges;
     padding-top: env(safe-area-inset-top);
