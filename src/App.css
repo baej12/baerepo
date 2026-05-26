@@ -52,6 +52,11 @@ body.resume-captcha-open .App-route-shell {
   overflow: hidden;
 }
 
+body.pdf-open .App::after,
+body.resume-captcha-open .App::after {
+  display: none;
+}
+
 .App-route-shell.is-exiting {
   opacity: 1;
   transform: translateY(0) scale(1);

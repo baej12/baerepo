@@ -14,6 +14,7 @@ body {
     --color-secondary: #8b5cf6;
     --color-accent: #06b6d4;
     --color-bg-dark: #0f172a;
+    --resume-captcha-page-bg: #030712;
     --color-text-primary: #ffffff;
     --color-text-secondary: #e2e2e2;
     --color-text-muted: #94a3b8;
@@ -682,7 +683,10 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
+    padding: max(env(safe-area-inset-top), 1rem)
+            max(env(safe-area-inset-right), 1rem)
+            max(calc(env(safe-area-inset-bottom) + 56px), 1rem)
+            max(env(safe-area-inset-left), 1rem);
     background: rgba(3, 7, 18, 0.86);
     backdrop-filter: blur(8px);
     overflow: hidden;
@@ -790,6 +794,11 @@ body.resume-captcha-open .App,
 body.resume-captcha-open .mainpage,
 body.resume-captcha-open button {
     cursor: auto !important;
+}
+
+html.resume-captcha-open,
+body.resume-captcha-open {
+    background: var(--resume-captcha-page-bg);
 }
 
 body.resume-captcha-open .custom-cursor,
