@@ -27,7 +27,7 @@ export const generatedRepoStats: GeneratedRepoStats[] = [
     "htmlUrl": "https://github.com/baej12/baerepo",
     "description": "This is the repository that hosts my website! ",
     "defaultBranch": "master",
-    "updatedAt": "2026-05-24T23:50:10Z",
+    "updatedAt": "2026-05-26T02:34:18Z",
     "primaryLanguage": "TypeScript",
     "languages": [
       "TypeScript",
@@ -37,28 +37,28 @@ export const generatedRepoStats: GeneratedRepoStats[] = [
     ],
     "recentCommits": [
       {
-        "sha": "df14257",
-        "message": "Merge pull request #71 from baej12/codex-captcha-cursor-cleanup",
-        "date": "2026-05-24",
-        "additions": 22,
-        "deletions": 125,
-        "changedFiles": 9
+        "sha": "90d9f58",
+        "message": "Merge pull request #83 from baej12/codex-fix-mobile-theme-color",
+        "date": "2026-05-26",
+        "additions": 23,
+        "deletions": 3,
+        "changedFiles": 4
       },
       {
-        "sha": "c3cc6cf",
-        "message": "Update portfolio content from latest resume",
-        "date": "2026-05-24",
-        "additions": 22,
-        "deletions": 125,
-        "changedFiles": 9
+        "sha": "bfdb9f9",
+        "message": "Captcha modal fix 2",
+        "date": "2026-05-26",
+        "additions": 14,
+        "deletions": 2,
+        "changedFiles": 3
       },
       {
-        "sha": "8dfeb4e",
-        "message": "Merge pull request #70 from baej12/codex-captcha-cursor-cleanup",
-        "date": "2026-05-24",
-        "additions": 13,
+        "sha": "5190e95",
+        "message": "Captcha fix",
+        "date": "2026-05-26",
+        "additions": 5,
         "deletions": 0,
-        "changedFiles": 2
+        "changedFiles": 1
       }
     ]
   },
