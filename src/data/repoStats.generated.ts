@@ -27,7 +27,7 @@ export const generatedRepoStats: GeneratedRepoStats[] = [
     "htmlUrl": "https://github.com/baej12/baerepo",
     "description": "This is the repository that hosts my website! ",
     "defaultBranch": "master",
-    "updatedAt": "2026-05-26T02:34:18Z",
+    "updatedAt": "2026-06-20T16:35:46Z",
     "primaryLanguage": "TypeScript",
     "languages": [
       "TypeScript",
@@ -37,28 +37,28 @@ export const generatedRepoStats: GeneratedRepoStats[] = [
     ],
     "recentCommits": [
       {
+        "sha": "dc30402",
+        "message": "Merge pull request #84 from baej12/automation/daily-repo-stats",
+        "date": "2026-06-20",
+        "additions": 18,
+        "deletions": 18,
+        "changedFiles": 1
+      },
+      {
+        "sha": "6123b09",
+        "message": "chore: refresh generated repo stats",
+        "date": "2026-05-26",
+        "additions": 18,
+        "deletions": 18,
+        "changedFiles": 1
+      },
+      {
         "sha": "90d9f58",
         "message": "Merge pull request #83 from baej12/codex-fix-mobile-theme-color",
         "date": "2026-05-26",
         "additions": 23,
         "deletions": 3,
         "changedFiles": 4
-      },
-      {
-        "sha": "bfdb9f9",
-        "message": "Captcha modal fix 2",
-        "date": "2026-05-26",
-        "additions": 14,
-        "deletions": 2,
-        "changedFiles": 3
-      },
-      {
-        "sha": "5190e95",
-        "message": "Captcha fix",
-        "date": "2026-05-26",
-        "additions": 5,
-        "deletions": 0,
-        "changedFiles": 1
       }
     ]
   },
